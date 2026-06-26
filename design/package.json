@@ -1,0 +1,15 @@
+{
+  "name": "emociju-ratas-branding",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Source artwork + generator for the Emociju Ratas app icon and splash mark.",
+  "scripts": {
+    "build": "node generate.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.33.5"
+  }
+}

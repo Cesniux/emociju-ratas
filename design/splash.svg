@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>
+    <linearGradient id="grad0" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#f2c938"/>
+      <stop offset="0.55" stop-color="#FFD43B"/>
+      <stop offset="1" stop-color="#ffe27a"/>
+    </linearGradient>
+    <linearGradient id="grad1" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#f28b29"/>
+      <stop offset="0.55" stop-color="#FF922B"/>
+      <stop offset="1" stop-color="#ffb56f"/>
+    </linearGradient>
+    <linearGradient id="grad2" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#ee4e4e"/>
+      <stop offset="0.55" stop-color="#FA5252"/>
+      <stop offset="1" stop-color="#fc8989"/>
+    </linearGradient>
+    <linearGradient id="grad3" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#b547d0"/>
+      <stop offset="0.55" stop-color="#BE4BDB"/>
+      <stop offset="1" stop-color="#d385e7"/>
+    </linearGradient>
+    <linearGradient id="grad4" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#4869e9"/>
+      <stop offset="0.55" stop-color="#4C6EF5"/>
+      <stop offset="1" stop-color="#859cf8"/>
+    </linearGradient>
+    <linearGradient id="grad5" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#20afc5"/>
+      <stop offset="0.55" stop-color="#22B8CF"/>
+      <stop offset="1" stop-color="#69cfde"/>
+    </linearGradient>
+    <linearGradient id="grad6" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#1ebf8f"/>
+      <stop offset="0.55" stop-color="#20C997"/>
+      <stop offset="1" stop-color="#67dab8"/>
+    </linearGradient>
+    <linearGradient id="grad7" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
+      <stop offset="0" stop-color="#8dcd2b"/>
+      <stop offset="0.55" stop-color="#94D82D"/>
+      <stop offset="1" stop-color="#b6e470"/>
+    </linearGradient>
+    <radialGradient id="hub" cx="0.5" cy="0.42" r="0.65">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.80" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef1f5"/>
+    </radialGradient>
+    <filter id="softshadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="13"/>
+      <feOffset dy="9"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cardshadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="18"/>
+      <feOffset dy="14"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs><g transform="translate(512 512) scale(0.86) translate(-512 -512)"><g filter="url(#softshadow)"><g transform="rotate(0 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad0)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(45 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad1)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(90 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad2)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(135 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad3)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(180 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad4)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(225 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad5)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(270 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad6)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(315 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad7)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g>
+    <circle cx="512" cy="512" r="120" fill="url(#hub)" stroke="#e6e9ee" stroke-width="5"/>
+    <circle cx="512" cy="512" r="78" fill="none" stroke="#eef1f5" stroke-width="4"/>
+  </g></g></svg>
