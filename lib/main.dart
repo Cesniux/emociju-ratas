@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'emotion_wheel.dart';
+
 const List<Map<String, String>> images = [
   {
     'path': 'assets/R. Plutchiko emocijų ratas.png',
-    'name': 'R. Plutchiko emocijų ratas',
+    'name': 'R. Plutchiko emocijų ratas (Pokalbių Gidas)',
   },
   {
     'path': 'assets/R. Plutchiko emocijų ratas 2.png',
@@ -12,6 +14,11 @@ const List<Map<String, String>> images = [
   },
   {'path': 'assets/lengvos mintys.png', 'name': 'lengvos mintys'},
 ];
+
+/// Selection index for the code-drawn (non-image) interactive wheel, shown as
+/// the entry right after the [images].
+const int kWheelIndex = 3;
+const String kWheelName = 'R. Plutchiko emocijų ratas';
 
 void main() {
   runApp(const EmocijuRatasApp());
@@ -25,7 +32,15 @@ class EmocijuRatasApp extends StatelessWidget {
     return MaterialApp(
       title: 'Emocijų Ratas',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.deepPurple, useMaterial3: true),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: const Color(0xFFB5651D),
+        scaffoldBackgroundColor: kPaperColor,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: kPaperColor,
+          foregroundColor: Color(0xFF4A3B2F),
+        ),
+      ),
       home: const HomePage(),
     );
   }
@@ -39,7 +54,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  // Defaults to the interactive wheel; overridden by a saved choice if any.
+  int _selectedIndex = kWheelIndex;
   final TransformationController _transformationController =
       TransformationController();
 
@@ -52,7 +68,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadSelection() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedIndex = prefs.getInt('selectedImage') ?? 0;
+      _selectedIndex = prefs.getInt('selectedImage') ?? kWheelIndex;
     });
   }
 
@@ -99,11 +115,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                   title: Text(image['name']!),
                   trailing: _selectedIndex == index
-                      ? const Icon(Icons.check, color: Colors.deepPurple)
+                      ? const Icon(Icons.check, color: Color(0xFF9C5B2E))
                       : null,
                   onTap: () => _selectImage(index),
                 );
               }),
+              ListTile(
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: const SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: EmotionWheelThumbnail(size: 56),
+                  ),
+                ),
+                title: const Text(kWheelName),
+                trailing: _selectedIndex == kWheelIndex
+                    ? const Icon(Icons.check, color: Color(0xFF9C5B2E))
+                    : null,
+                onTap: () => _selectImage(kWheelIndex),
+              ),
               const SizedBox(height: 16),
             ],
           ),
@@ -118,6 +149,15 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  Widget _buildBody() {
+    if (_selectedIndex == kWheelIndex) {
+      return const Center(child: EmotionWheelView());
+    }
+    return Center(
+      child: Image.asset(images[_selectedIndex]['path']!, fit: BoxFit.contain),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,12 +166,7 @@ class _HomePageState extends State<HomePage> {
         transformationController: _transformationController,
         minScale: 0.5,
         maxScale: 10.0,
-        child: Center(
-          child: Image.asset(
-            images[_selectedIndex]['path']!,
-            fit: BoxFit.contain,
-          ),
-        ),
+        child: _buildBody(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showImagePicker,
