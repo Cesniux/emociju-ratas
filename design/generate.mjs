@@ -2,7 +2,7 @@
 //
 // This file is the *source of truth* for the brand mark: an 8-petal "flower wheel"
 // echoing the app's Plutchik emotion wheel (assets/R. Plutchiko emocijų ratas 2.png),
-// drawn in the 8 emotion colours on a clean white background.
+// drawn in the 8 calm emotion tints on warm paper (#FAF6F0).
 //
 // It builds the vector artwork (also dumped to design/*.svg for inspection) and
 // rasterizes it into every platform slot:
@@ -27,17 +27,23 @@ const p = (...s) => resolve(ROOT, ...s);
 // Design constants
 // ---------------------------------------------------------------------------
 
-// 8 Plutchik emotions, clockwise from 12 o'clock. SVG rotate() is clockwise.
+// 8 Plutchik emotions, clockwise from 12 o'clock (his canonical order, the
+// same as the flower inside the app), in the app's calm "strong" tints
+// (lib/theme/palette.dart). SVG rotate() is clockwise.
 const EMOTIONS = [
-  ['joy', '#FFD43B'],
-  ['anticipation', '#FF922B'],
-  ['anger', '#FA5252'],
-  ['disgust', '#BE4BDB'],
-  ['sadness', '#4C6EF5'],
-  ['surprise', '#22B8CF'],
-  ['fear', '#20C997'],
-  ['trust', '#94D82D'],
+  ['joy', '#E6C35C'],
+  ['trust', '#A9C78A'],
+  ['fear', '#7FB59A'],
+  ['surprise', '#8CC3D2'],
+  ['sadness', '#93ACD3'],
+  ['disgust', '#B89FCB'],
+  ['anger', '#DC8D78'],
+  ['anticipation', '#E9A86A'],
 ];
+
+// Warm paper: the app's background, so icon, splash and app feel like one.
+const BG = '#FAF6F0';
+const HUB_EDGE = '#E9E1D6';
 
 // One petal pointing up, on a 1024 canvas centred at (512,512). Tip reaches r~417.
 const PETAL = 'M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z';
@@ -65,17 +71,17 @@ function defs() {
   const grads = EMOTIONS.map(
     ([, col], i) => `
     <linearGradient id="grad${i}" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="${darken(col, 0.05)}"/>
+      <stop offset="0" stop-color="${darken(col, 0.12)}"/>
       <stop offset="0.55" stop-color="${col}"/>
-      <stop offset="1" stop-color="${lighten(col, 0.32)}"/>
+      <stop offset="1" stop-color="${lighten(col, 0.2)}"/>
     </linearGradient>`
   ).join('');
 
   return `<defs>${grads}
     <radialGradient id="hub" cx="0.5" cy="0.42" r="0.65">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="0.80" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#eef1f5"/>
+      <stop offset="0" stop-color="#FFFDF9"/>
+      <stop offset="0.80" stop-color="${BG}"/>
+      <stop offset="1" stop-color="${HUB_EDGE}"/>
     </radialGradient>
     <filter id="softshadow" x="-25%" y="-25%" width="150%" height="150%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="13"/>
@@ -95,11 +101,11 @@ function defs() {
 function bloom() {
   const petals = EMOTIONS.map(
     (_, i) =>
-      `<g transform="rotate(${i * 45} 512 512)"><path d="${PETAL}" fill="url(#grad${i})" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g>`
+      `<g transform="rotate(${i * 45} 512 512)"><path d="${PETAL}" fill="url(#grad${i})" stroke="${BG}" stroke-width="7" stroke-linejoin="round"/></g>`
   ).join('');
   return `<g filter="url(#softshadow)">${petals}
-    <circle cx="512" cy="512" r="120" fill="url(#hub)" stroke="#e6e9ee" stroke-width="5"/>
-    <circle cx="512" cy="512" r="78" fill="none" stroke="#eef1f5" stroke-width="4"/>
+    <circle cx="512" cy="512" r="120" fill="url(#hub)" stroke="${HUB_EDGE}" stroke-width="5"/>
+    <circle cx="512" cy="512" r="78" fill="none" stroke="${HUB_EDGE}" stroke-width="4"/>
   </g>`;
 }
 
@@ -114,14 +120,14 @@ function iconSvg({ scale = 1, bg = null } = {}) {
 function macSvg() {
   const inset = 100;
   const size = 1024 - 2 * inset;
-  const card = `<g filter="url(#cardshadow)"><rect x="${inset}" y="${inset}" width="${size}" height="${size}" rx="190" ry="190" fill="#ffffff"/></g>`;
+  const card = `<g filter="url(#cardshadow)"><rect x="${inset}" y="${inset}" width="${size}" height="${size}" rx="190" ry="190" fill="${BG}"/></g>`;
   const inner = `<g transform="translate(512 512) scale(0.60) translate(-512 -512)">${bloom()}</g>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">${defs()}${card}${inner}</svg>`;
 }
 
 // Three reusable compositions.
 const SVG = {
-  full: iconSvg({ scale: 1, bg: '#ffffff' }),       // full-bleed, white background
+  full: iconSvg({ scale: 1, bg: BG }),              // full-bleed, warm paper background
   foreground: iconSvg({ scale: 0.7 }),              // transparent, inside adaptive/maskable safe zone
   splash: iconSvg({ scale: 0.86 }),                 // transparent, prominent centred mark
   mac: macSvg(),
@@ -143,9 +149,9 @@ async function write(buf, ...path) {
   return out;
 }
 
-// PNG with no alpha channel, composited over white (required for iOS marketing icon).
+// PNG with no alpha channel, composited over warm paper (iOS needs opaque icons).
 async function flat(svg, size) {
-  return sharp(renderPng(svg, size)).flatten({ background: '#ffffff' }).png().toBuffer();
+  return sharp(renderPng(svg, size)).flatten({ background: BG }).png().toBuffer();
 }
 
 const log = (label, file) => console.log(`  ${label.padEnd(22)} ${file.replace(ROOT + '/', '')}`);

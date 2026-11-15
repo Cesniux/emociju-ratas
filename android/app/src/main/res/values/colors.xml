@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Warm paper, the same colour as the app's background (light). -->
+    <color name="splash_background">#FAF6F0</color>
     <!-- Background colour for the adaptive launcher icon. -->
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="ic_launcher_background">#FAF6F0</color>
 </resources>
