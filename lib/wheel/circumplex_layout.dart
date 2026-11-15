@@ -55,7 +55,7 @@ class CircumplexLayout extends WheelLayout {
     pillFont = (R / 16).clamp(10.5, 14.0);
     final style = wheelLabelStyle(colors.ink, pillFont);
     final axisStyle = wheelLabelStyle(
-      colors.inkMuted,
+      colors.ink,
       (R / 19).clamp(10.5, 13.0),
       weight: FontWeight.w500,
     );

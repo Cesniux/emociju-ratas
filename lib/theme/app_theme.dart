@@ -57,6 +57,8 @@ ThemeData buildTheme(Brightness brightness) {
     fontFamily: Fonts.body,
     textTheme: text,
     splashFactory: InkRipple.splashFactory,
+    // A clearly visible keyboard focus highlight on warm paper.
+    focusColor: c.ink.withValues(alpha: 0.16),
     materialTapTargetSize: MaterialTapTargetSize.padded,
     visualDensity: VisualDensity.standard,
     iconTheme: IconThemeData(color: c.ink, size: 22),

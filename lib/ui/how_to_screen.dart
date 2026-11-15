@@ -121,14 +121,17 @@ class _Card extends StatelessWidget {
         children.add(
           Align(
             alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: () => openLink(
-                context,
-                Uri.parse(helplinesAllUrl),
-                shown: 'pagalbasau.lt',
+            child: Semantics(
+              link: true,
+              child: TextButton.icon(
+                onPressed: () => openLink(
+                  context,
+                  Uri.parse(helplinesAllUrl),
+                  shown: 'pagalbasau.lt',
+                ),
+                icon: const Icon(Icons.open_in_new_rounded, size: 20),
+                label: const Text('Visos pagalbos linijos: pagalbasau.lt'),
               ),
-              icon: const Icon(Icons.open_in_new_rounded, size: 20),
-              label: const Text('Visos pagalbos linijos: pagalbasau.lt'),
             ),
           ),
         );
@@ -294,7 +297,8 @@ class _ReferenceTile extends StatelessWidget {
           child: Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: reference.text),
+                // English titles: let screen readers switch voice.
+                TextSpan(text: reference.text, locale: const Locale('en')),
                 if (link != null) ...[
                   const TextSpan(text: ' '),
                   TextSpan(
@@ -318,12 +322,15 @@ class _ReferenceTile extends StatelessWidget {
         child: content,
       );
     }
-    return InkWell(
-      borderRadius: BorderRadius.circular(8),
-      onTap: () => openLink(context, Uri.parse(link)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Space.xs + 2),
-        child: content,
+    return Semantics(
+      link: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => openLink(context, Uri.parse(link)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Space.xs + 2),
+          child: content,
+        ),
       ),
     );
   }

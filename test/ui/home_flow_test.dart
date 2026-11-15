@@ -3,6 +3,7 @@ import 'package:emociju_ratas/state/settings_store.dart';
 import 'package:emociju_ratas/ui/focus_sheet.dart';
 import 'package:emociju_ratas/wheel/wheel_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -118,5 +119,25 @@ void main() {
     await pumpApp(tester, size: const Size(320, 568), textScale: 2);
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the wheel works with a keyboard: Tab to a family, Enter opens', (
+    tester,
+  ) async {
+    await pumpApp(tester, size: const Size(1024, 900));
+    await tester.pumpAndSettle();
+    // Top bar first (wheel pill, Kaip naudotis), then the families clockwise.
+    for (var i = 0; i < 3; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+    }
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byType(FocusSheet), findsOneWidget);
+    expect(
+      find.text('Nuostaba'),
+      findsWidgets,
+      reason: 'first family clockwise from 12 o\'clock',
+    );
   });
 }

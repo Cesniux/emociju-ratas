@@ -51,7 +51,8 @@ class SelectionTray extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: Space.s),
             decoration: BoxDecoration(
-              color: c.sunken,
+              color: items.isEmpty ? Colors.transparent : c.sunken,
+              border: Border.all(color: c.outline),
               borderRadius: BorderRadius.circular(Radii.card + 4),
             ),
             child: items.isEmpty

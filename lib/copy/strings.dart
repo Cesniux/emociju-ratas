@@ -25,6 +25,7 @@ abstract final class S {
   static const formMasculine = 'pavargęs';
   static const formFeminine = 'pavargusi';
   static const chosen = 'pasirinkta';
+  static const generalFeeling = 'Bendras jausmas';
   static const plutchikLadder = 'Nuo silpno iki stipraus';
   static const plutchikMixes = 'Mišiniai su kaimynais';
   static const plutchikOpposite = 'Priešingybė';

@@ -143,6 +143,11 @@ class _FocusSheetState extends State<FocusSheet> {
               ],
               if (content.titleFeeling != null) ...[
                 const SizedBox(height: Space.m),
+                Text(
+                  S.generalFeeling,
+                  style: text.labelMedium?.copyWith(color: c.inkMuted),
+                ),
+                const SizedBox(height: Space.xs),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: chip(content.titleFeeling!),

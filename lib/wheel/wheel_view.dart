@@ -10,6 +10,7 @@ import '../theme/motion.dart';
 import '../theme/tokens.dart';
 import 'wheel_layout.dart';
 import 'wheel_painters.dart';
+import 'wheel_targets.dart';
 
 /// The interactive wheel: tap to open a family, pinch to see more words.
 class WheelView extends StatefulWidget {
@@ -183,25 +184,13 @@ class WheelViewState extends State<WheelView>
               },
               child: Stack(
                 children: [
-                  ListenableBuilder(
-                    listenable: widget.selection,
-                    builder: (context, _) => RepaintBoundary(
-                      child: CustomPaint(
-                        size: Size.square(side),
-                        isComplex: true,
-                        painter: WheelBasePainter(
-                          layout: layout,
-                          zoomStep: _zoomStep,
-                          chosenCounts: {
-                            for (final f in widget.wheel.families)
-                              f.id: widget.selection.countIn(
-                                widget.wheel.feelings.where(
-                                  (x) => x.familyId == f.id,
-                                ),
-                              ),
-                          },
-                          onTarget: _handleHit,
-                        ),
+                  RepaintBoundary(
+                    child: CustomPaint(
+                      size: Size.square(side),
+                      isComplex: true,
+                      painter: WheelBasePainter(
+                        layout: layout,
+                        zoomStep: _zoomStep,
                       ),
                     ),
                   ),
@@ -216,6 +205,12 @@ class WheelViewState extends State<WheelView>
                         probe: _probe,
                       ),
                     ),
+                  ),
+                  WheelTargets(
+                    layout: layout,
+                    wheel: widget.wheel,
+                    selection: widget.selection,
+                    onHit: _handleHit,
                   ),
                 ],
               ),
