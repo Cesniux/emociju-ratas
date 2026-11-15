@@ -142,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                   // Very large text on a small phone: let the page scroll
                   // rather than squeeze the wheel to nothing.
                   final scale = MediaQuery.textScalerOf(context).scale(1);
-                  if (scale > 1.3 && box.maxHeight < 700) {
+                  if (scale > 1.3) {
                     final wheelSide = (box.maxWidth - 2 * Space.m).clamp(
                       200.0,
                       420.0,

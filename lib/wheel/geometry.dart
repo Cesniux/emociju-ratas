@@ -32,6 +32,11 @@ bool angleInSweep(double a, double start, double sweep) =>
 /// 3 o'clock).
 double canvasAngle(double theta) => theta - math.pi / 2;
 
+/// The corner radius each rounded sector was really built with (narrow
+/// sectors get smaller corners). Painting must stroke with the same radius,
+/// or neighbouring slices grow into each other.
+final Expando<double> _builtCorner = Expando<double>('sector corner');
+
 /// Rounded annular sector with a constant-width gap to its neighbours.
 ///
 /// Fill this path *and* stroke it with width `2 * corner` and round joins in
@@ -90,11 +95,13 @@ Path sectorPath(
     path.lineTo(tip.dx, tip.dy);
   }
   path.close();
+  _builtCorner[path] = cr;
   return path;
 }
 
 /// Paints [path] as a rounded shape (see [sectorPath]).
 void paintRounded(Canvas canvas, Path path, Color color, double corner) {
+  corner = _builtCorner[path] ?? corner;
   final fill = Paint()
     ..color = color
     ..style = PaintingStyle.fill
@@ -121,6 +128,7 @@ void paintRoundedOutline(
   double corner,
   double width,
 ) {
+  corner = _builtCorner[path] ?? corner;
   canvas.drawPath(
     path,
     Paint()
