@@ -31,23 +31,23 @@ class WheelBasePainter extends CustomPainter {
   SemanticsBuilderCallback? get semanticsBuilder {
     if (onTarget == null) return null;
     return (size) => [
-          for (final t in layout.semanticTargets)
-            CustomPainterSemantics(
-              key: ValueKey('${t.familyId}|${t.label}'),
-              rect: t.rect,
-              properties: SemanticsProperties(
-                label: t.label,
-                hint: S.familyHint,
-                value: (chosenCounts[t.familyId] ?? 0) > 0
-                    ? S.chosenValue(chosenCounts[t.familyId]!)
-                    : null,
-                button: true,
-                textDirection: TextDirection.ltr,
-                sortKey: OrdinalSortKey(t.order.toDouble()),
-                onTap: () => onTarget!(t.hit),
-              ),
-            ),
-        ];
+      for (final t in layout.semanticTargets)
+        CustomPainterSemantics(
+          key: ValueKey('${t.familyId}|${t.label}'),
+          rect: t.rect,
+          properties: SemanticsProperties(
+            label: t.label,
+            hint: S.familyHint,
+            value: (chosenCounts[t.familyId] ?? 0) > 0
+                ? S.chosenValue(chosenCounts[t.familyId]!)
+                : null,
+            button: true,
+            textDirection: TextDirection.ltr,
+            sortKey: OrdinalSortKey(t.order.toDouble()),
+            onTap: () => onTarget!(t.hit),
+          ),
+        ),
+    ];
   }
 
   @override
@@ -74,12 +74,12 @@ class WheelHighlightPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) => layout.paintHighlights(
-        canvas,
-        chosen: selection.keys,
-        zoomStep: zoomStep,
-        hoverFamilyId: hoverFamilyId,
-        probe: probe,
-      );
+    canvas,
+    chosen: selection.keys,
+    zoomStep: zoomStep,
+    hoverFamilyId: hoverFamilyId,
+    probe: probe,
+  );
 
   @override
   bool shouldRepaint(WheelHighlightPainter oldDelegate) =>

@@ -120,13 +120,20 @@ abstract class WheelLayout {
     required AppColors colors,
     required WordForm form,
     double coreScale = 1,
-  }) =>
-      switch (wheel) {
-        SunburstWheel() => SunburstLayout(wheel,
-            side: side, colors: colors, form: form, coreScale: coreScale),
-        PetalWheel() =>
-          PetalLayout(wheel, side: side, colors: colors, form: form),
-        CircumplexWheel() =>
-          CircumplexLayout(wheel, side: side, colors: colors, form: form),
-      };
+  }) => switch (wheel) {
+    SunburstWheel() => SunburstLayout(
+      wheel,
+      side: side,
+      colors: colors,
+      form: form,
+      coreScale: coreScale,
+    ),
+    PetalWheel() => PetalLayout(wheel, side: side, colors: colors, form: form),
+    CircumplexWheel() => CircumplexLayout(
+      wheel,
+      side: side,
+      colors: colors,
+      form: form,
+    ),
+  };
 }

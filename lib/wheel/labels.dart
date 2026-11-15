@@ -11,22 +11,24 @@ String sentenceCase(String text) => text.isEmpty
     ? text
     : text.characters.first.toUpperCase() + text.characters.skip(1).string;
 
-TextStyle wheelLabelStyle(Color color, double size,
-        {FontWeight weight = FontWeight.w500}) =>
-    TextStyle(
-      fontFamily: Fonts.body,
-      fontSize: size,
-      fontWeight: weight,
-      color: color,
-      height: 1.15,
-      letterSpacing: 0,
-    );
+TextStyle wheelLabelStyle(
+  Color color,
+  double size, {
+  FontWeight weight = FontWeight.w500,
+}) => TextStyle(
+  fontFamily: Fonts.body,
+  fontSize: size,
+  fontWeight: weight,
+  color: color,
+  height: 1.15,
+  letterSpacing: 0,
+);
 
 TextPainter layoutText(String text, TextStyle style) => TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout();
+  text: TextSpan(text: text, style: style),
+  textDirection: TextDirection.ltr,
+  maxLines: 1,
+)..layout();
 
 /// Width and line height of [text] at font size 100, for linear scaling.
 ({double width, double height}) measure100(String text, TextStyle base) {
@@ -41,9 +43,42 @@ const _vowels = 'aąeęėiįyouųū';
 /// Two-consonant starts a Lithuanian syllable can have (smagu, stalas,
 /// bloga…); "dž" and "ch" are one sound and stay together.
 const _onsets = {
-  'st', 'sk', 'sp', 'sm', 'sn', 'sl', 'sv', 'šk', 'šl', 'šm', 'šn', 'šp',
-  'št', 'šv', 'žl', 'žm', 'žv', 'bl', 'br', 'dr', 'gl', 'gr', 'kl', 'kr',
-  'kv', 'pl', 'pr', 'tr', 'tv', 'dv', 'gv', 'zv', 'dž', 'ch', 'fl', 'fr',
+  'st',
+  'sk',
+  'sp',
+  'sm',
+  'sn',
+  'sl',
+  'sv',
+  'šk',
+  'šl',
+  'šm',
+  'šn',
+  'šp',
+  'št',
+  'šv',
+  'žl',
+  'žm',
+  'žv',
+  'bl',
+  'br',
+  'dr',
+  'gl',
+  'gr',
+  'kl',
+  'kr',
+  'kv',
+  'pl',
+  'pr',
+  'tr',
+  'tv',
+  'dv',
+  'gv',
+  'zv',
+  'dž',
+  'ch',
+  'fl',
+  'fr',
 };
 
 /// Splits a Lithuanian word in two at a syllable boundary near its middle
@@ -71,7 +106,9 @@ const _onsets = {
     final to = groups[g + 1].$1;
     final k = to - from;
     if (k <= 0) continue;
-    final lastTwo = k >= 2 ? '${chars[to - 2]}${chars[to - 1]}'.toLowerCase() : '';
+    final lastTwo = k >= 2
+        ? '${chars[to - 2]}${chars[to - 1]}'.toLowerCase()
+        : '';
     boundaries.add(_onsets.contains(lastTwo) ? to - 2 : to - 1);
   }
   boundaries.removeWhere((b) => b < 3 || chars.length - b < 3);
@@ -123,8 +160,14 @@ class PlacedLabel {
 /// Text that follows an arc, always reading left to right: on the top half
 /// glyph tops point outward, on the bottom half inward.
 class ArcLabel {
-  ArcLabel._(this._glyphs, this._advances, this.lineRadii, this.centerAngle,
-      this.bottom, this.fontSize);
+  ArcLabel._(
+    this._glyphs,
+    this._advances,
+    this.lineRadii,
+    this.centerAngle,
+    this.bottom,
+    this.fontSize,
+  );
 
   final List<List<TextPainter>> _glyphs;
   final List<List<double>> _advances;
@@ -164,7 +207,8 @@ class ArcLabel {
     final radii = <double>[
       for (var i = 0; i < n; i++)
         radius +
-            (bottom ? -1 : 1) * (n == 1 ? 0 : (i == 0 ? 0.5 : -0.5) * lineHeight)
+            (bottom ? -1 : 1) *
+                (n == 1 ? 0 : (i == 0 ? 0.5 : -0.5) * lineHeight),
     ];
     return ArcLabel._(glyphs, advances, radii, a, bottom, style.fontSize ?? 14);
   }

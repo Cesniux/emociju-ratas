@@ -11,23 +11,26 @@ abstract final class Fonts {
 /// Type scale (design/SYSTEM.md). Reading text 17/1.5, sentence case.
 TextTheme buildTextTheme({required Color ink, required Color muted}) {
   TextStyle heading(double size, double height) => TextStyle(
-        fontFamily: Fonts.heading,
-        fontSize: size,
-        height: height,
-        fontWeight: FontWeight.w600,
-        color: ink,
-        letterSpacing: 0,
-      );
-  TextStyle body(double size, double height,
-          {FontWeight weight = FontWeight.w400, Color? color}) =>
-      TextStyle(
-        fontFamily: Fonts.body,
-        fontSize: size,
-        height: height,
-        fontWeight: weight,
-        color: color ?? ink,
-        letterSpacing: 0,
-      );
+    fontFamily: Fonts.heading,
+    fontSize: size,
+    height: height,
+    fontWeight: FontWeight.w600,
+    color: ink,
+    letterSpacing: 0,
+  );
+  TextStyle body(
+    double size,
+    double height, {
+    FontWeight weight = FontWeight.w400,
+    Color? color,
+  }) => TextStyle(
+    fontFamily: Fonts.body,
+    fontSize: size,
+    height: height,
+    fontWeight: weight,
+    color: color ?? ink,
+    letterSpacing: 0,
+  );
 
   return TextTheme(
     displaySmall: heading(26, 1.25),

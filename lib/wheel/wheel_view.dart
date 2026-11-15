@@ -35,8 +35,10 @@ class WheelView extends StatefulWidget {
 class WheelViewState extends State<WheelView>
     with SingleTickerProviderStateMixin {
   final _controller = TransformationController();
-  late final AnimationController _reset =
-      AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
+  late final AnimationController _reset = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 450),
+  );
   Animation<Matrix4>? _resetAnimation;
 
   double _zoomStep = 1;
@@ -84,10 +86,10 @@ class WheelViewState extends State<WheelView>
     final step = scale >= 2.6
         ? 3.0
         : scale >= 1.8
-            ? 2.0
-            : scale >= 1.3
-                ? 1.5
-                : 1.0;
+        ? 2.0
+        : scale >= 1.3
+        ? 1.5
+        : 1.0;
     final zoomed = scale > 1.02;
     if (step != _zoomStep || zoomed != _zoomed) {
       setState(() {
@@ -104,13 +106,21 @@ class WheelViewState extends State<WheelView>
       return;
     }
     _reset.duration = motion.long;
-    _resetAnimation = Matrix4Tween(begin: _controller.value, end: Matrix4.identity())
-        .animate(CurvedAnimation(parent: _reset, curve: Motion.easeInOut));
+    _resetAnimation = Matrix4Tween(
+      begin: _controller.value,
+      end: Matrix4.identity(),
+    ).animate(CurvedAnimation(parent: _reset, curve: Motion.easeInOut));
     _reset.forward(from: 0);
   }
 
   WheelLayout _layoutFor(double side, AppColors colors, double coreScale) {
-    final key = (widget.wheel.id, side, widget.form, colors.brightness, coreScale);
+    final key = (
+      widget.wheel.id,
+      side,
+      widget.form,
+      colors.brightness,
+      coreScale,
+    );
     if (key != _layoutKey || _layout == null) {
       _layout?.dispose();
       _layout = WheelLayout.create(
@@ -134,117 +144,128 @@ class WheelViewState extends State<WheelView>
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
-    final coreScale = MediaQuery.textScalerOf(context)
-        .clamp(minScaleFactor: 1, maxScaleFactor: 1.3)
-        .scale(1);
+    final coreScale = MediaQuery.textScalerOf(
+      context,
+    ).clamp(minScaleFactor: 1, maxScaleFactor: 1.3).scale(1);
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final side = math
-          .min(math.min(constraints.maxWidth, constraints.maxHeight), widget.maxSide)
-          .floorToDouble();
-      if (side < 40) return const SizedBox.shrink();
-      final layout = _layoutFor(side, colors, coreScale);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final side = math
+            .min(
+              math.min(constraints.maxWidth, constraints.maxHeight),
+              widget.maxSide,
+            )
+            .floorToDouble();
+        if (side < 40) return const SizedBox.shrink();
+        final layout = _layoutFor(side, colors, coreScale);
 
-      final wheel = SizedBox.square(
-        dimension: side,
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onHover: (e) {
-            final id = layout.hitTest(e.localPosition)?.familyId;
-            if (id != _hover) setState(() => _hover = id);
-          },
-          onExit: (_) {
-            if (_hover != null) setState(() => _hover = null);
-          },
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            excludeFromSemantics: true,
-            onTapUp: (d) {
-              final hit = layout.hitTest(d.localPosition);
-              if (hit != null) _handleHit(hit);
+        final wheel = SizedBox.square(
+          dimension: side,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onHover: (e) {
+              final id = layout.hitTest(e.localPosition)?.familyId;
+              if (id != _hover) setState(() => _hover = id);
             },
-            child: Stack(
-              children: [
-                ListenableBuilder(
-                  listenable: widget.selection,
-                  builder: (context, _) => RepaintBoundary(
-                    child: CustomPaint(
-                      size: Size.square(side),
-                      isComplex: true,
-                      painter: WheelBasePainter(
-                        layout: layout,
-                        zoomStep: _zoomStep,
-                        chosenCounts: {
-                          for (final f in widget.wheel.families)
-                            f.id: widget.selection.countIn(widget.wheel.feelings
-                                .where((x) => x.familyId == f.id)),
-                        },
-                        onTarget: _handleHit,
+            onExit: (_) {
+              if (_hover != null) setState(() => _hover = null);
+            },
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              excludeFromSemantics: true,
+              onTapUp: (d) {
+                final hit = layout.hitTest(d.localPosition);
+                if (hit != null) _handleHit(hit);
+              },
+              child: Stack(
+                children: [
+                  ListenableBuilder(
+                    listenable: widget.selection,
+                    builder: (context, _) => RepaintBoundary(
+                      child: CustomPaint(
+                        size: Size.square(side),
+                        isComplex: true,
+                        painter: WheelBasePainter(
+                          layout: layout,
+                          zoomStep: _zoomStep,
+                          chosenCounts: {
+                            for (final f in widget.wheel.families)
+                              f.id: widget.selection.countIn(
+                                widget.wheel.feelings.where(
+                                  (x) => x.familyId == f.id,
+                                ),
+                              ),
+                          },
+                          onTarget: _handleHit,
+                        ),
                       ),
                     ),
                   ),
+                  IgnorePointer(
+                    child: CustomPaint(
+                      size: Size.square(side),
+                      painter: WheelHighlightPainter(
+                        layout: layout,
+                        selection: widget.selection,
+                        zoomStep: _zoomStep,
+                        hoverFamilyId: _hover,
+                        probe: _probe,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        return Center(
+          child: SizedBox.square(
+            dimension: side,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                InteractiveViewer(
+                  transformationController: _controller,
+                  minScale: 1,
+                  maxScale: 3,
+                  boundaryMargin: EdgeInsets.zero,
+                  clipBehavior: Clip.hardEdge,
+                  child: wheel,
                 ),
-                IgnorePointer(
-                  child: CustomPaint(
-                    size: Size.square(side),
-                    painter: WheelHighlightPainter(
-                      layout: layout,
-                      selection: widget.selection,
-                      zoomStep: _zoomStep,
-                      hoverFamilyId: _hover,
-                      probe: _probe,
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: AnimatedOpacity(
+                    opacity: _zoomed ? 1 : 0,
+                    duration: Motion.of(context).short,
+                    child: IgnorePointer(
+                      ignoring: !_zoomed,
+                      child: ExcludeSemantics(
+                        excluding: !_zoomed,
+                        child: FilledButton.tonalIcon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: colors.surface,
+                            foregroundColor: colors.ink,
+                            side: BorderSide(color: colors.outline),
+                          ),
+                          onPressed: _resetZoom,
+                          icon: const Icon(
+                            Icons.zoom_out_map_rounded,
+                            size: 20,
+                          ),
+                          label: const Text(S.resetZoom),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-        ),
-      );
-
-      return Center(
-        child: SizedBox.square(
-          dimension: side,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              InteractiveViewer(
-                transformationController: _controller,
-                minScale: 1,
-                maxScale: 3,
-                boundaryMargin: EdgeInsets.zero,
-                clipBehavior: Clip.hardEdge,
-                child: wheel,
-              ),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: AnimatedOpacity(
-                  opacity: _zoomed ? 1 : 0,
-                  duration: Motion.of(context).short,
-                  child: IgnorePointer(
-                    ignoring: !_zoomed,
-                    child: ExcludeSemantics(
-                      excluding: !_zoomed,
-                      child: FilledButton.tonalIcon(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: colors.surface,
-                          foregroundColor: colors.ink,
-                          side: BorderSide(color: colors.outline),
-                        ),
-                        onPressed: _resetZoom,
-                        icon: const Icon(Icons.zoom_out_map_rounded, size: 20),
-                        label: const Text(S.resetZoom),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -275,8 +296,12 @@ class _WheelThumbnailState extends State<WheelThumbnail> {
     final key = (widget.wheel.id, widget.size, colors.brightness);
     if (key != _key) {
       _layout?.dispose();
-      _layout = WheelLayout.create(widget.wheel,
-          side: widget.size, colors: colors, form: WordForm.masculine);
+      _layout = WheelLayout.create(
+        widget.wheel,
+        side: widget.size,
+        colors: colors,
+        form: WordForm.masculine,
+      );
       _key = key;
     }
     return ExcludeSemantics(

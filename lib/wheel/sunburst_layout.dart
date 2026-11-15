@@ -85,8 +85,11 @@ class SunburstLayout extends WheelLayout {
     final n = roots.length;
     final totalLeaves = roots.fold<int>(0, (s, r) => s + r.leafCount);
     final rc = (stops[0] + stops[1]) / 2;
-    final coreStyle =
-        wheelLabelStyle(colors.ink, 14 * coreScale, weight: FontWeight.w600);
+    final coreStyle = wheelLabelStyle(
+      colors.ink,
+      14 * coreScale,
+      weight: FontWeight.w600,
+    );
     final floors = <double>[];
     for (final r in roots) {
       final name = sentenceCase(r.family.name.of(form));
@@ -94,8 +97,11 @@ class SunburstLayout extends WheelLayout {
       final split = splitSyllables(name);
       var need = (one + 12) / rc;
       if (split != null) {
-        final two = math.max(measure100(split.$1, coreStyle).width,
-                measure100(split.$2, coreStyle).width) *
+        final two =
+            math.max(
+              measure100(split.$1, coreStyle).width,
+              measure100(split.$2, coreStyle).width,
+            ) *
             0.14 *
             coreScale;
         need = math.min(need, (two + 12) / rc);
@@ -113,10 +119,14 @@ class SunburstLayout extends WheelLayout {
           changed = true;
         }
       }
-      final fixedSum = [for (var i = 0; i < n; i++) if (fixed[i]) sweeps[i]]
-          .fold<double>(0, (a, b) => a + b);
-      final freeSum = [for (var i = 0; i < n; i++) if (!fixed[i]) sweeps[i]]
-          .fold<double>(0, (a, b) => a + b);
+      final fixedSum = [
+        for (var i = 0; i < n; i++)
+          if (fixed[i]) sweeps[i],
+      ].fold<double>(0, (a, b) => a + b);
+      final freeSum = [
+        for (var i = 0; i < n; i++)
+          if (!fixed[i]) sweeps[i],
+      ].fold<double>(0, (a, b) => a + b);
       if (freeSum <= 0) break;
       final k = (tau - fixedSum) / freeSum;
       for (var i = 0; i < n; i++) {
@@ -142,53 +152,80 @@ class SunburstLayout extends WheelLayout {
     for (var i = 0; i < n; i++) {
       final root = roots[i];
       final hue = root.family.hue;
-      _core.add(_Seg(
-        feeling: root.core,
-        family: i,
-        ring: 0,
-        r0: stops[0],
-        r1: stops[1],
-        start: starts[i],
-        sweep: sweeps[i],
-        path: sectorPath(center, stops[0], stops[1], starts[i], sweeps[i],
-            gap: gap, corner: corner),
-        tier: Tier.strong,
-        corner: corner,
-      ));
+      _core.add(
+        _Seg(
+          feeling: root.core,
+          family: i,
+          ring: 0,
+          r0: stops[0],
+          r1: stops[1],
+          start: starts[i],
+          sweep: sweeps[i],
+          path: sectorPath(
+            center,
+            stops[0],
+            stops[1],
+            starts[i],
+            sweeps[i],
+            gap: gap,
+            corner: corner,
+          ),
+          tier: Tier.strong,
+          corner: corner,
+        ),
+      );
       var ma = starts[i];
       final leaves = root.leafCount;
       for (final m in root.children) {
         final ms = sweeps[i] * m.leafCount / leaves;
         final mr1 = (m.children.isEmpty || !twoRings) ? stops.last : stops[2];
-        _middle.add(_Seg(
-          feeling: m.feeling,
-          family: i,
-          ring: 1,
-          r0: stops[1],
-          r1: mr1,
-          start: ma,
-          sweep: ms,
-          path: sectorPath(center, stops[1], mr1, ma, ms,
-              gap: gap, corner: corner),
-          tier: Tier.medium,
-          corner: corner,
-        ));
+        _middle.add(
+          _Seg(
+            feeling: m.feeling,
+            family: i,
+            ring: 1,
+            r0: stops[1],
+            r1: mr1,
+            start: ma,
+            sweep: ms,
+            path: sectorPath(
+              center,
+              stops[1],
+              mr1,
+              ma,
+              ms,
+              gap: gap,
+              corner: corner,
+            ),
+            tier: Tier.medium,
+            corner: corner,
+          ),
+        );
         var oa = ma;
         for (final o in m.children) {
           final os = ms / m.children.length;
-          _outer.add(_Seg(
-            feeling: o.feeling,
-            family: i,
-            ring: 2,
-            r0: stops[2],
-            r1: stops[3],
-            start: oa,
-            sweep: os,
-            path: sectorPath(center, stops[2], stops[3], oa, os,
-                gap: gap, corner: math.min(corner, 3)),
-            tier: Tier.soft,
-            corner: math.min(corner, 3),
-          ));
+          _outer.add(
+            _Seg(
+              feeling: o.feeling,
+              family: i,
+              ring: 2,
+              r0: stops[2],
+              r1: stops[3],
+              start: oa,
+              sweep: os,
+              path: sectorPath(
+                center,
+                stops[2],
+                stops[3],
+                oa,
+                os,
+                gap: gap,
+                corner: math.min(corner, 3),
+              ),
+              tier: Tier.soft,
+              corner: math.min(corner, 3),
+            ),
+          );
           oa += os;
         }
         ma += ms;
@@ -216,8 +253,10 @@ class SunburstLayout extends WheelLayout {
       var choice = (one, [name]);
       final split = splitSyllables(name);
       if (split != null && one < 15) {
-        final w = math.max(measure100(split.$1, style).width,
-            measure100(split.$2, style).width);
+        final w = math.max(
+          measure100(split.$1, style).width,
+          measure100(split.$2, style).width,
+        );
         final two = math.min(arc / w, thickness / (2 * m1.height)) * 100;
         if (two > one) choice = (two, [split.$1, split.$2]);
       }
@@ -240,8 +279,11 @@ class SunburstLayout extends WheelLayout {
     return size.toDouble();
   }
 
-  double _layoutRadial(List<_Seg> segs,
-      {required double max, required FontWeight weight}) {
+  double _layoutRadial(
+    List<_Seg> segs, {
+    required double max,
+    required FontWeight weight,
+  }) {
     if (segs.isEmpty) return 0;
     final base = wheelLabelStyle(colors.ink, 100, weight: weight);
     final fits = <double>[];
@@ -256,7 +298,9 @@ class SunburstLayout extends WheelLayout {
     // One calm size per ring; the few longest words shrink on their own.
     final sorted = [...fits]..sort();
     final ring = math.max(
-        3.0, math.min(max, sorted[(sorted.length * 0.1).floor()]));
+      3.0,
+      math.min(max, sorted[(sorted.length * 0.1).floor()]),
+    );
     for (var i = 0; i < segs.length; i++) {
       final seg = segs[i];
       final size = math.max(2.0, math.min(ring, fits[i]));
@@ -268,8 +312,10 @@ class SunburstLayout extends WheelLayout {
           : sinT < 0;
       seg.label = PlacedLabel(
         lines: [
-          layoutText(seg.feeling.word.of(form),
-              wheelLabelStyle(colors.ink, size, weight: weight)),
+          layoutText(
+            seg.feeling.word.of(form),
+            wheelLabelStyle(colors.ink, size, weight: weight),
+          ),
         ],
         anchor: polar(center, theta, (seg.r0 + seg.r1) / 2),
         rotation: left ? theta + math.pi / 2 : theta - math.pi / 2,
@@ -321,8 +367,13 @@ class SunburstLayout extends WheelLayout {
     if (hoverFamilyId != null) {
       for (final s in _core) {
         if (model.roots[s.family].family.id == hoverFamilyId) {
-          paintRoundedOutline(canvas, s.path,
-              colors.ink.withValues(alpha: 0.35), s.corner, 1.5);
+          paintRoundedOutline(
+            canvas,
+            s.path,
+            colors.ink.withValues(alpha: 0.35),
+            s.corner,
+            1.5,
+          );
           paintRounded(canvas, s.path, _fill(s), s.corner);
           if (LabelMin.visible(coreFont, LabelMin.core, zoomStep)) {
             s.arc?.paint(canvas, center);

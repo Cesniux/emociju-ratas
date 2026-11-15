@@ -16,12 +16,22 @@ final class LtWord {
   final String feminine;
 
   bool get isGendered => masculine != feminine;
-  String of(WordForm form) =>
-      form == WordForm.feminine ? feminine : masculine;
+  String of(WordForm form) => form == WordForm.feminine ? feminine : masculine;
 }
 
 /// Calm hue families (resolved to colours in `lib/theme/palette.dart`).
-enum FamilyHue { yellow, olive, blue, mauve, clay, orange, sage, green, sky, rose }
+enum FamilyHue {
+  yellow,
+  olive,
+  blue,
+  mauve,
+  clay,
+  orange,
+  sage,
+  green,
+  sky,
+  rose,
+}
 
 /// A colour family: a sunburst core, a Plutchik petal or an energy quadrant.
 final class Family {
@@ -116,9 +126,8 @@ final class SunburstNode {
   final Feeling feeling;
   final List<SunburstNode> children;
 
-  int get leafCount => children.isEmpty
-      ? 1
-      : children.fold(0, (sum, c) => sum + c.leafCount);
+  int get leafCount =>
+      children.isEmpty ? 1 : children.fold(0, (sum, c) => sum + c.leafCount);
 
   Iterable<SunburstNode> get descendants sync* {
     for (final c in children) {
@@ -137,9 +146,8 @@ final class SunburstRoot {
   final Feeling core;
   final List<SunburstNode> children;
 
-  int get leafCount => children.isEmpty
-      ? 1
-      : children.fold(0, (sum, c) => sum + c.leafCount);
+  int get leafCount =>
+      children.isEmpty ? 1 : children.fold(0, (sum, c) => sum + c.leafCount);
 }
 
 final class SunburstWheel extends WheelModel {
@@ -242,7 +250,11 @@ final class PetalWheel extends WheelModel {
 // ---------------------------------------------------------------------------
 
 final class PlacedFeeling {
-  const PlacedFeeling(this.feeling, {required this.clockDeg, required this.radius});
+  const PlacedFeeling(
+    this.feeling, {
+    required this.clockDeg,
+    required this.radius,
+  });
 
   final Feeling feeling;
 
@@ -291,9 +303,11 @@ final class CircumplexWheel extends WheelModel {
 
   /// The [count] words nearest to (valence, arousal), nearest first.
   List<PlacedFeeling> nearest(double valence, double arousal, {int count = 4}) {
-    final sorted = [...points]..sort((a, b) {
+    final sorted = [...points]
+      ..sort((a, b) {
         double d(PlacedFeeling p) =>
-            math.pow(p.valence - valence, 2) + math.pow(p.arousal - arousal, 2).toDouble();
+            math.pow(p.valence - valence, 2) +
+            math.pow(p.arousal - arousal, 2).toDouble();
         return d(a).compareTo(d(b));
       });
     return sorted.take(count).toList();
@@ -305,8 +319,15 @@ final class CircumplexWheel extends WheelModel {
 // ---------------------------------------------------------------------------
 
 const _translit = {
-  'ą': 'a', 'č': 'c', 'ę': 'e', 'ė': 'e', 'į': 'i', 'š': 's', 'ų': 'u',
-  'ū': 'u', 'ž': 'z',
+  'ą': 'a',
+  'č': 'c',
+  'ę': 'e',
+  'ė': 'e',
+  'į': 'i',
+  'š': 's',
+  'ų': 'u',
+  'ū': 'u',
+  'ž': 'z',
 };
 
 /// `pasibjaurėjimas` → `pasibjaurejimas`; spaces become dashes.
@@ -377,7 +398,8 @@ SunburstWheel buildSunburst({
   final familySlugs = <String>{};
   final roots = <SunburstRoot>[];
   for (final f in families) {
-    final familyId = '$id/${_uniqueSlug(slugOf(f.name.masculine), familySlugs)}';
+    final familyId =
+        '$id/${_uniqueSlug(slugOf(f.name.masculine), familySlugs)}';
     final family = Family(
       id: familyId,
       name: f.name,
@@ -394,7 +416,8 @@ SunburstWheel buildSunburst({
       note: f.note,
     );
     SunburstNode node(W w, String parentId, Set<String> siblings) {
-      final nodeId = '$parentId/${_uniqueSlug(slugOf(w.word.masculine), siblings)}';
+      final nodeId =
+          '$parentId/${_uniqueSlug(slugOf(w.word.masculine), siblings)}';
       final childSlugs = <String>{};
       return SunburstNode(
         Feeling(
@@ -410,11 +433,11 @@ SunburstWheel buildSunburst({
     }
 
     final slugs = <String>{};
-    roots.add(SunburstRoot(
-      family,
-      core,
-      [for (final c in f.children) node(c, familyId, slugs)],
-    ));
+    roots.add(
+      SunburstRoot(family, core, [
+        for (final c in f.children) node(c, familyId, slugs),
+      ]),
+    );
   }
   return SunburstWheel(
     id: id,

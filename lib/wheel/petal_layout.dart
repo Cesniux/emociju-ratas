@@ -21,10 +21,10 @@ class _Band {
   PlacedLabel? label;
 
   Tier get tier => switch (level) {
-        0 => Tier.strong,
-        1 => Tier.medium,
-        _ => Tier.soft,
-      };
+    0 => Tier.strong,
+    1 => Tier.medium,
+    _ => Tier.soft,
+  };
 }
 
 class _DyadPill {
@@ -70,43 +70,63 @@ class PetalLayout extends WheelLayout {
       final p = model.petals[i];
       final theta = i * _petalSweep;
       final start = theta - half;
-      _bands.add(_Band(
-        p.intense,
-        i,
-        0,
-        sectorPath(center, radii[0], radii[1], start, _petalSweep,
-            gap: gap, corner: _corner),
-        polar(center, theta, (radii[0] + radii[1]) / 2 + 2),
-      ));
-      _bands.add(_Band(
-        p.basic,
-        i,
-        1,
-        sectorPath(center, radii[1], radii[2], start, _petalSweep,
-            gap: gap, corner: _corner),
-        polar(center, theta, (radii[1] + radii[2]) / 2),
-      ));
-      _bands.add(_Band(
-        p.mild,
-        i,
-        2,
-        _tipPath(theta, half, gap),
-        polar(center, theta, radii[2] + (radii[3] - radii[2]) * 0.38),
-      ));
+      _bands.add(
+        _Band(
+          p.intense,
+          i,
+          0,
+          sectorPath(
+            center,
+            radii[0],
+            radii[1],
+            start,
+            _petalSweep,
+            gap: gap,
+            corner: _corner,
+          ),
+          polar(center, theta, (radii[0] + radii[1]) / 2 + 2),
+        ),
+      );
+      _bands.add(
+        _Band(
+          p.basic,
+          i,
+          1,
+          sectorPath(
+            center,
+            radii[1],
+            radii[2],
+            start,
+            _petalSweep,
+            gap: gap,
+            corner: _corner,
+          ),
+          polar(center, theta, (radii[1] + radii[2]) / 2),
+        ),
+      );
+      _bands.add(
+        _Band(
+          p.mild,
+          i,
+          2,
+          _tipPath(theta, half, gap),
+          polar(center, theta, radii[2] + (radii[3] - radii[2]) * 0.38),
+        ),
+      );
     }
 
     // Uniform font per level (intense / basic / mild), horizontal text.
     final style100 = wheelLabelStyle(colors.ink, 100, weight: FontWeight.w500);
     double boxWidth(int level) => switch (level) {
-          0 => 2 * ((radii[0] + radii[1]) / 2) * math.sin(half) * 0.82,
-          1 => 2 * ((radii[1] + radii[2]) / 2) * math.sin(half) * 0.86,
-          _ => 2 * radii[2] * math.sin(half) * 0.62,
-        };
+      0 => 2 * ((radii[0] + radii[1]) / 2) * math.sin(half) * 0.82,
+      1 => 2 * ((radii[1] + radii[2]) / 2) * math.sin(half) * 0.86,
+      _ => 2 * radii[2] * math.sin(half) * 0.62,
+    };
     double boxHeight(int level) => switch (level) {
-          0 => (radii[1] - radii[0]) * 0.7,
-          1 => (radii[2] - radii[1]) * 0.78,
-          _ => (radii[3] - radii[2]) * 0.5,
-        };
+      0 => (radii[1] - radii[0]) * 0.7,
+      1 => (radii[2] - radii[1]) * 0.78,
+      _ => (radii[3] - radii[2]) * 0.5,
+    };
     final perLevel = <int, (double, Map<int, List<String>>)>{};
     for (final level in [0, 1, 2]) {
       var size = level == 1 ? 15.0 : 13.0;
@@ -114,17 +134,19 @@ class PetalLayout extends WheelLayout {
       for (final b in _bands.where((b) => b.level == level)) {
         final text = sentenceCase(b.feeling.word.of(form));
         final m = measure100(text, style100);
-        final one = math.min(boxWidth(level) / m.width,
-                boxHeight(level) / m.height) *
+        final one =
+            math.min(boxWidth(level) / m.width, boxHeight(level) / m.height) *
             100;
         var best = one;
         var chosenLines = [text];
         final split = splitSyllables(text);
         if (split != null) {
-          final w = math.max(measure100(split.$1, style100).width,
-              measure100(split.$2, style100).width);
-          final two = math.min(boxWidth(level) / w,
-                  boxHeight(level) / (2 * m.height)) *
+          final w = math.max(
+            measure100(split.$1, style100).width,
+            measure100(split.$2, style100).width,
+          );
+          final two =
+              math.min(boxWidth(level) / w, boxHeight(level) / (2 * m.height)) *
               100;
           if (two > one * 1.12) {
             best = two;
@@ -138,11 +160,14 @@ class PetalLayout extends WheelLayout {
     }
     for (final b in _bands) {
       final (size, lines) = perLevel[b.level]!;
-      final style = wheelLabelStyle(colors.ink, size,
-          weight: b.level == 1 ? FontWeight.w600 : FontWeight.w500);
+      final style = wheelLabelStyle(
+        colors.ink,
+        size,
+        weight: b.level == 1 ? FontWeight.w600 : FontWeight.w500,
+      );
       final text = sentenceCase(b.feeling.word.of(form));
-      final fitsOne = measure100(text, style100).width * size / 100 <=
-          boxWidth(b.level);
+      final fitsOne =
+          measure100(text, style100).width * size / 100 <= boxWidth(b.level);
       b.label = PlacedLabel(
         lines: [
           for (final l in (fitsOne ? [text] : lines[b.petal]!))
@@ -166,7 +191,10 @@ class PetalLayout extends WheelLayout {
     for (var k = 0; k < model.dyads.length; k++) {
       final d = model.dyads[k];
       final theta = d.a * _petalSweep + half;
-      final label = layoutText(sentenceCase(d.feeling.word.of(form)), dyadStyle);
+      final label = layoutText(
+        sentenceCase(d.feeling.word.of(form)),
+        dyadStyle,
+      );
       var c = polar(center, theta, 0.925 * R);
       final w = label.width + 16;
       final h = label.height + 8;
@@ -175,22 +203,24 @@ class PetalLayout extends WheelLayout {
         c.dx.clamp(w / 2 + 1, side - w / 2 - 1),
         c.dy.clamp(h / 2 + 1, side - h / 2 - 1),
       );
-      _dyads.add(_DyadPill(
-        d,
-        k,
-        PlacedLabel(lines: [label], anchor: c, rotation: 0, fontSize: dyadSize),
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(center: c, width: w, height: h),
-          Radius.circular(h / 2),
+      _dyads.add(
+        _DyadPill(
+          d,
+          k,
+          PlacedLabel(
+            lines: [label],
+            anchor: c,
+            rotation: 0,
+            fontSize: dyadSize,
+          ),
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(center: c, width: w, height: h),
+            Radius.circular(h / 2),
+          ),
         ),
-      ));
+      );
     }
-    fonts = [
-      perLevel[0]!.$1,
-      perLevel[1]!.$1,
-      perLevel[2]!.$1,
-      dyadSize,
-    ];
+    fonts = [perLevel[0]!.$1, perLevel[1]!.$1, perLevel[2]!.$1, dyadSize];
   }
 
   Path _tipPath(double theta, double half, double gap) {
@@ -226,8 +256,12 @@ class PetalLayout extends WheelLayout {
   @override
   void paintBase(Canvas canvas, double zoomStep) {
     for (final b in _bands) {
-      paintRounded(canvas, b.path,
-          Palette.fill(_hue(b.petal), b.tier, brightness), _corner);
+      paintRounded(
+        canvas,
+        b.path,
+        Palette.fill(_hue(b.petal), b.tier, brightness),
+        _corner,
+      );
     }
     for (final b in _bands) {
       if (_levelVisible(b.level, zoomStep)) b.label?.paint(canvas);
@@ -255,19 +289,27 @@ class PetalLayout extends WheelLayout {
     Offset? probe,
   }) {
     for (final b in _bands) {
-      final hovered = b.level == 1 &&
-          model.petals[b.petal].family.id == hoverFamilyId;
+      final hovered =
+          b.level == 1 && model.petals[b.petal].family.id == hoverFamilyId;
       final isChosen = chosen.contains(b.feeling.key);
       if (!hovered && !isChosen) continue;
-      paintRoundedOutline(canvas, b.path,
-          isChosen ? colors.ink : colors.ink.withValues(alpha: 0.35),
-          _corner, isChosen ? 2 : 1.5);
+      paintRoundedOutline(
+        canvas,
+        b.path,
+        isChosen ? colors.ink : colors.ink.withValues(alpha: 0.35),
+        _corner,
+        isChosen ? 2 : 1.5,
+      );
       paintRounded(
-          canvas,
-          b.path,
-          Palette.fill(_hue(b.petal), isChosen ? Tier.strong : b.tier,
-              brightness),
-          _corner);
+        canvas,
+        b.path,
+        Palette.fill(
+          _hue(b.petal),
+          isChosen ? Tier.strong : b.tier,
+          brightness,
+        ),
+        _corner,
+      );
       if (_levelVisible(b.level, zoomStep)) {
         b.label?.paint(canvas);
       } else if (isChosen) {
@@ -277,15 +319,16 @@ class PetalLayout extends WheelLayout {
     for (final p in _dyads) {
       if (!chosen.contains(p.dyad.feeling.key)) continue;
       canvas.drawRRect(
-          p.rect,
-          Paint()
-            ..color = Palette.fill(_hue(p.dyad.a), Tier.strong, brightness));
+        p.rect,
+        Paint()..color = Palette.fill(_hue(p.dyad.a), Tier.strong, brightness),
+      );
       canvas.drawRRect(
-          p.rect,
-          Paint()
-            ..color = colors.ink
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2);
+        p.rect,
+        Paint()
+          ..color = colors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
       if (_levelVisible(3, zoomStep)) p.label.paint(canvas);
     }
   }
@@ -293,11 +336,15 @@ class PetalLayout extends WheelLayout {
   @override
   WheelHit? hitTest(Offset p) {
     for (final d in _dyads) {
-      final target = d.rect.outerRect.inflate(math.max(
-          0, (48 - d.rect.outerRect.shortestSide) / 2));
+      final target = d.rect.outerRect.inflate(
+        math.max(0, (48 - d.rect.outerRect.shortestSide) / 2),
+      );
       if (target.contains(p)) {
-        return DyadHit(model.petals[d.dyad.a].family.id,
-            dyad: d.index, feelingId: d.dyad.feeling.id);
+        return DyadHit(
+          model.petals[d.dyad.a].family.id,
+          dyad: d.index,
+          feelingId: d.dyad.feeling.id,
+        );
       }
     }
     final r = (p - center).distance;
@@ -319,9 +366,10 @@ class PetalLayout extends WheelLayout {
     for (var i = 0; i < model.petals.length; i++)
       SemanticTarget(
         rect: Rect.fromCenter(
-            center: _bands.firstWhere((b) => b.petal == i && b.level == 1).anchor,
-            width: 48,
-            height: 48),
+          center: _bands.firstWhere((b) => b.petal == i && b.level == 1).anchor,
+          width: 48,
+          height: 48,
+        ),
         label: sentenceCase(model.petals[i].basic.word.of(form)),
         familyId: model.petals[i].family.id,
         hit: PetalHit(model.petals[i].family.id, petal: i),
@@ -336,8 +384,11 @@ class PetalLayout extends WheelLayout {
         ),
         label: sentenceCase(d.dyad.feeling.word.of(form)),
         familyId: model.petals[d.dyad.a].family.id,
-        hit: DyadHit(model.petals[d.dyad.a].family.id,
-            dyad: d.index, feelingId: d.dyad.feeling.id),
+        hit: DyadHit(
+          model.petals[d.dyad.a].family.id,
+          dyad: d.index,
+          feelingId: d.dyad.feeling.id,
+        ),
         order: d.dyad.a * 2 + 1,
       ),
   ];

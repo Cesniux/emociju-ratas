@@ -26,20 +26,16 @@ class Motion {
   /// Bottom sheets: soft rise, or none.
   AnimationStyle get sheet => reduced
       ? AnimationStyle.noAnimation
-      : AnimationStyle(
-          duration: _medium,
-          reverseDuration: _short,
-          curve: ease,
-        );
+      : AnimationStyle(duration: _medium, reverseDuration: _short, curve: ease);
 
   /// `MediaQuery.disableAnimations` only reflects Android; iOS Reduce Motion
   /// comes from the platform's accessibility features, so check both.
   static Motion of(BuildContext context) {
     final disable = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
-    final reduce = View.maybeOf(context)
-            ?.platformDispatcher
-            .accessibilityFeatures
-            .reduceMotion ??
+    final reduce =
+        View.maybeOf(
+          context,
+        )?.platformDispatcher.accessibilityFeatures.reduceMotion ??
         false;
     return Motion._(disable || reduce);
   }
@@ -62,8 +58,10 @@ class CalmPageTransitionsBuilder extends PageTransitionsBuilder {
     return FadeTransition(
       opacity: curved,
       child: SlideTransition(
-        position: Tween(begin: const Offset(0, 0.04), end: Offset.zero)
-            .animate(curved),
+        position: Tween(
+          begin: const Offset(0, 0.04),
+          end: Offset.zero,
+        ).animate(curved),
         child: child,
       ),
     );

@@ -10,11 +10,13 @@ void main() {
   final out = StringBuffer()
     ..writeln('# Žodžiai visuose ratuose')
     ..writeln()
-    ..writeln('Sugeneruota iš `lib/data/` (`dart run tool/print_wheels.dart`). '
-        'Kiekvienas žodis paimtas iš esamo lietuviško rato ar sąrašo '
-        '(stulpelis „Šaltinis“). Moteriškos formos sudarytos gramatiškai. '
-        'Stulpelis „EN“ rodo, kurį originalo žodį atitinka, ir programėlėje '
-        'nerodomas.')
+    ..writeln(
+      'Sugeneruota iš `lib/data/` (`dart run tool/print_wheels.dart`). '
+      'Kiekvienas žodis paimtas iš esamo lietuviško rato ar sąrašo '
+      '(stulpelis „Šaltinis“). Moteriškos formos sudarytos gramatiškai. '
+      'Stulpelis „EN“ rodo, kurį originalo žodį atitinka, ir programėlėje '
+      'nerodomas.',
+    )
     ..writeln();
 
   final notes = <String>[];
@@ -30,10 +32,14 @@ void main() {
 
     void row(String level, Feeling f) {
       final w = f.word;
-      out.writeln('| $level | ${w.masculine} | '
-          '${w.isGendered ? w.feminine : '·'} | ${f.en ?? ''} | '
-          '${wordSources[f.src]?.name ?? f.src} | ${f.note ?? ''} |');
-      if (f.note != null) notes.add('${wheel.title}: **${w.masculine}**. ${f.note}');
+      out.writeln(
+        '| $level | ${w.masculine} | '
+        '${w.isGendered ? w.feminine : '·'} | ${f.en ?? ''} | '
+        '${wordSources[f.src]?.name ?? f.src} | ${f.note ?? ''} |',
+      );
+      if (f.note != null) {
+        notes.add('${wheel.title}: **${w.masculine}**. ${f.note}');
+      }
     }
 
     switch (wheel) {
@@ -54,8 +60,11 @@ void main() {
           row('stiprus', p.intense);
         }
         for (final d in dyads) {
-          row('mišinys ${petals[d.a].basic.word.masculine} + '
-              '${petals[d.b].basic.word.masculine}', d.feeling);
+          row(
+            'mišinys ${petals[d.a].basic.word.masculine} + '
+            '${petals[d.b].basic.word.masculine}',
+            d.feeling,
+          );
         }
       case CircumplexWheel(:final points):
         for (final p in points) {
@@ -79,8 +88,10 @@ void main() {
     ..writeln('## Šaltiniai')
     ..writeln();
   for (final s in wordSources.values) {
-    out.writeln('- **${s.name}**. ${s.description}'
-        '${s.url == null ? '' : ' ${s.url}'}');
+    out.writeln(
+      '- **${s.name}**. ${s.description}'
+      '${s.url == null ? '' : ' ${s.url}'}',
+    );
   }
 
   // ignore: avoid_print

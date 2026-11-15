@@ -47,15 +47,15 @@ class AppColors extends ThemeExtension<AppColors> {
 
   /// Every text-on-background pair the interface uses (contrast-tested).
   List<(String, Color, Color)> get textPairs => [
-        ('ink on background', ink, background),
-        ('ink on surface', ink, surface),
-        ('ink on sunken', ink, sunken),
-        ('muted on background', inkMuted, background),
-        ('muted on surface', inkMuted, surface),
-        ('muted on sunken', inkMuted, sunken),
-        ('surface on ink (filled button)', surface, ink),
-        ('background on ink (snack bar)', background, ink),
-      ];
+    ('ink on background', ink, background),
+    ('ink on surface', ink, surface),
+    ('ink on sunken', ink, sunken),
+    ('muted on background', inkMuted, background),
+    ('muted on surface', inkMuted, surface),
+    ('muted on sunken', inkMuted, sunken),
+    ('surface on ink (filled button)', surface, ink),
+    ('background on ink (snack bar)', background, ink),
+  ];
 
   @override
   AppColors copyWith({
@@ -66,16 +66,15 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? ink,
     Color? inkMuted,
     Color? outline,
-  }) =>
-      AppColors(
-        brightness: brightness ?? this.brightness,
-        background: background ?? this.background,
-        surface: surface ?? this.surface,
-        sunken: sunken ?? this.sunken,
-        ink: ink ?? this.ink,
-        inkMuted: inkMuted ?? this.inkMuted,
-        outline: outline ?? this.outline,
-      );
+  }) => AppColors(
+    brightness: brightness ?? this.brightness,
+    background: background ?? this.background,
+    surface: surface ?? this.surface,
+    sunken: sunken ?? this.sunken,
+    ink: ink ?? this.ink,
+    inkMuted: inkMuted ?? this.inkMuted,
+    outline: outline ?? this.outline,
+  );
 
   @override
   AppColors lerp(AppColors? other, double t) {

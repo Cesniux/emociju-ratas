@@ -66,7 +66,8 @@ Path sectorPath(
   final outerSweep = sweep - 2 * oo;
   if (outerSweep <= 0) return Path();
 
-  final path = Path()..moveTo(polar(c, start + oi, ri).dx, polar(c, start + oi, ri).dy);
+  final path = Path()
+    ..moveTo(polar(c, start + oi, ri).dx, polar(c, start + oi, ri).dy);
   final p1 = polar(c, start + oo, ro);
   path.lineTo(p1.dx, p1.dy);
   path.arcTo(
@@ -114,7 +115,12 @@ void paintRounded(Canvas canvas, Path path, Color color, double corner) {
 
 /// Paints an ink outline [width] wide around a rounded shape.
 void paintRoundedOutline(
-    Canvas canvas, Path path, Color color, double corner, double width) {
+  Canvas canvas,
+  Path path,
+  Color color,
+  double corner,
+  double width,
+) {
   canvas.drawPath(
     path,
     Paint()

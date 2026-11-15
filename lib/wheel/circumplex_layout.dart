@@ -39,7 +39,12 @@ class CircumplexLayout extends WheelLayout {
   late final double pillFont;
 
   /// Axis words (top, right, bottom, left).
-  static const axes = ['Daug energijos', 'Malonu', 'Mažai energijos', 'Nemalonu'];
+  static const axes = [
+    'Daug energijos',
+    'Malonu',
+    'Mažai energijos',
+    'Nemalonu',
+  ];
 
   void _build() {
     final R = radius;
@@ -55,27 +60,39 @@ class CircumplexLayout extends WheelLayout {
         c.dx.clamp(w / 2 + 2, side - w / 2 - 2),
         c.dy.clamp(h / 2 + 2, side - h / 2 - 2),
       );
-      _pills.add(_Pill(
-        p,
-        PlacedLabel(lines: [label], anchor: c, rotation: 0, fontSize: pillFont),
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(center: c, width: w, height: h),
-          Radius.circular(h / 2),
+      _pills.add(
+        _Pill(
+          p,
+          PlacedLabel(
+            lines: [label],
+            anchor: c,
+            rotation: 0,
+            fontSize: pillFont,
+          ),
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(center: c, width: w, height: h),
+            Radius.circular(h / 2),
+          ),
+          model.quadrantAt(p.valence, p.arousal),
         ),
-        model.quadrantAt(p.valence, p.arousal),
-      ));
+      );
     }
-    final axisStyle = wheelLabelStyle(colors.inkMuted, (R / 19).clamp(10.5, 13.0),
-        weight: FontWeight.w500);
+    final axisStyle = wheelLabelStyle(
+      colors.inkMuted,
+      (R / 19).clamp(10.5, 13.0),
+      weight: FontWeight.w500,
+    );
     for (var i = 0; i < 4; i++) {
       final l = layoutText(axes[i], axisStyle);
       final inset = (i.isEven ? l.height : l.width) / 2 + 10;
-      _axisLabels.add(PlacedLabel(
-        lines: [l],
-        anchor: polar(center, i * math.pi / 2, R - inset),
-        rotation: 0,
-        fontSize: axisStyle.fontSize!,
-      ));
+      _axisLabels.add(
+        PlacedLabel(
+          lines: [l],
+          anchor: polar(center, i * math.pi / 2, R - inset),
+          rotation: 0,
+          fontSize: axisStyle.fontSize!,
+        ),
+      );
     }
   }
 
@@ -152,25 +169,34 @@ class CircumplexLayout extends WheelLayout {
     Offset? probe,
   }) {
     if (probe != null) {
-      canvas.drawCircle(probe, 14, Paint()..color = colors.ink.withValues(alpha: 0.12));
       canvas.drawCircle(
-          probe,
-          9,
-          Paint()
-            ..color = colors.ink
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2);
+        probe,
+        14,
+        Paint()..color = colors.ink.withValues(alpha: 0.12),
+      );
+      canvas.drawCircle(
+        probe,
+        9,
+        Paint()
+          ..color = colors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
       canvas.drawCircle(probe, 3.5, Paint()..color = colors.ink);
     }
     for (final p in _pills) {
       if (!chosen.contains(p.placed.feeling.key)) continue;
-      canvas.drawRRect(p.rect, Paint()..color = _quadrantTint(p.quadrant, Tier.strong));
       canvas.drawRRect(
-          p.rect,
-          Paint()
-            ..color = colors.ink
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2);
+        p.rect,
+        Paint()..color = _quadrantTint(p.quadrant, Tier.strong),
+      );
+      canvas.drawRRect(
+        p.rect,
+        Paint()
+          ..color = colors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
       p.label.paint(canvas);
     }
   }
@@ -182,8 +208,12 @@ class CircumplexLayout extends WheelLayout {
     final v = (d.dx / radius).clamp(-1.0, 1.0);
     final a = (-d.dy / radius).clamp(-1.0, 1.0);
     final q = model.quadrantAt(v, a);
-    return CircumplexHit(model.quadrants[q].id,
-        valence: v, arousal: a, position: p);
+    return CircumplexHit(
+      model.quadrants[q].id,
+      valence: v,
+      arousal: a,
+      position: p,
+    );
   }
 
   @override

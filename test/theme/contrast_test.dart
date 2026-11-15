@@ -28,8 +28,11 @@ void main() {
         for (final hue in FamilyHue.values) {
           for (final tier in Tier.values) {
             final fill = Palette.fill(hue, tier, colors.brightness);
-            expect(contrast(colors.ink, fill), greaterThanOrEqualTo(4.5),
-                reason: '${hue.name}/${tier.name}');
+            expect(
+              contrast(colors.ink, fill),
+              greaterThanOrEqualTo(4.5),
+              reason: '${hue.name}/${tier.name}',
+            );
           }
         }
       });
@@ -37,8 +40,11 @@ void main() {
       test('ink outline on a chosen (strong) segment is at least 3:1', () {
         for (final hue in FamilyHue.values) {
           final fill = Palette.fill(hue, Tier.strong, colors.brightness);
-          expect(contrast(colors.ink, fill), greaterThanOrEqualTo(3),
-              reason: hue.name);
+          expect(
+            contrast(colors.ink, fill),
+            greaterThanOrEqualTo(3),
+            reason: hue.name,
+          );
         }
       });
     });

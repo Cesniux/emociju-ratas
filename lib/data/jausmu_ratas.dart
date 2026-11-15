@@ -14,9 +14,13 @@
 
 import 'models.dart';
 
-W _w(String masculine, String feminine, String en,
-        [List<W> children = const [], String? note]) =>
-    W(LtWord(masculine, feminine), en: en, note: note, children: children);
+W _w(
+  String masculine,
+  String feminine,
+  String en, [
+  List<W> children = const [],
+  String? note,
+]) => W(LtWord(masculine, feminine), en: en, note: note, children: children);
 
 W _n(String noun, String en, [List<W> children = const [], String? note]) =>
     W(LtWord.noun(noun), en: en, note: note, children: children);
@@ -33,7 +37,8 @@ final SunburstWheel jausmuRatas = buildSunburst(
       name: const LtWord.noun('nuostaba'),
       hue: FamilyHue.yellow,
       en: 'Surprised',
-      signal: 'Kyla, kai nutinka kas nors netikėto. Padeda stabtelėti ir '
+      signal:
+          'Kyla, kai nutinka kas nors netikėto. Padeda stabtelėti ir '
           'pastebėti, kas vyksta.',
       children: [
         _w('susijaudinęs', 'susijaudinusi', 'Excited', [
@@ -86,8 +91,13 @@ final SunburstWheel jausmuRatas = buildSunburst(
         ]),
         _w('susidomėjęs', 'susidomėjusi', 'Interested', [
           _w('žingeidus', 'žingeidi', 'Inquisitive'),
-          _w('smalsus', 'smalsi', 'Curious', const [],
-              'Paveiksle parašyta „smalus“.'),
+          _w(
+            'smalsus',
+            'smalsi',
+            'Curious',
+            const [],
+            'Paveiksle parašyta „smalus“.',
+          ),
         ]),
         _w('patenkintas', 'patenkinta', 'Content', [
           _w('džiugus', 'džiugi', 'Joyful'),
@@ -103,7 +113,8 @@ final SunburstWheel jausmuRatas = buildSunburst(
       name: const LtWord.noun('liūdesys'),
       hue: FamilyHue.blue,
       en: 'Sad + Bad',
-      signal: 'Ateina, kai ko nors netenki ar kažko labai trūksta. Šalia jo '
+      signal:
+          'Ateina, kai ko nors netenki ar kažko labai trūksta. Šalia jo '
           'dažnai būna nuovargis ir įtampa.',
       children: [
         _w('nuobodus', 'nuobodi', 'Bored', [
@@ -120,8 +131,13 @@ final SunburstWheel jausmuRatas = buildSunburst(
         ]),
         _w('pavargęs', 'pavargusi', 'Tired', [
           _w('išsiblaškęs', 'išsiblaškiusi', 'Unfocused'),
-          _w('mieguistas', 'mieguista', 'Sleepy', const [],
-              'Paveiksle parašyta „miegustas“.'),
+          _w(
+            'mieguistas',
+            'mieguista',
+            'Sleepy',
+            const [],
+            'Paveiksle parašyta „miegustas“.',
+          ),
         ]),
         _w('įskaudintas', 'įskaudinta', 'Hurt', [
           _w('susigėdęs', 'susigėdusi', 'Embarrassed'),
@@ -139,14 +155,26 @@ final SunburstWheel jausmuRatas = buildSunburst(
           _w('bejėgis', 'bejėgė', 'Powerless'),
           _w('sielvartaujantis', 'sielvartaujanti', 'Grief'),
         ]),
-        _w('pažeidžiamas', 'pažeidžiama', 'Vulnerable', [
-          _w('trapus', 'trapi', 'Fragile'),
-          _w('silpnas', 'silpna', 'Victimised'),
-        ], 'Paveiksle po Pasibjaurėjimu, o Roberts rate po liūdesiu.'),
-        _w('vienišas', 'vieniša', 'Lonely', [
-          _w('apleistas', 'apleista', 'Abandoned'),
-          _w('ignoruojamas', 'ignoruojama', 'Isolated'),
-        ], 'Paveiksle po Pasibjaurėjimu, o Roberts rate po liūdesiu.'),
+        _w(
+          'pažeidžiamas',
+          'pažeidžiama',
+          'Vulnerable',
+          [
+            _w('trapus', 'trapi', 'Fragile'),
+            _w('silpnas', 'silpna', 'Victimised'),
+          ],
+          'Paveiksle po Pasibjaurėjimu, o Roberts rate po liūdesiu.',
+        ),
+        _w(
+          'vienišas',
+          'vieniša',
+          'Lonely',
+          [
+            _w('apleistas', 'apleista', 'Abandoned'),
+            _w('ignoruojamas', 'ignoruojama', 'Isolated'),
+          ],
+          'Paveiksle po Pasibjaurėjimu, o Roberts rate po liūdesiu.',
+        ),
       ],
     ),
     F(
@@ -177,7 +205,8 @@ final SunburstWheel jausmuRatas = buildSunburst(
       name: const LtWord.noun('pyktis'),
       hue: FamilyHue.clay,
       en: 'Angry',
-      signal: 'Dažnai parodo, kad kažkas peržengė ribą arba atrodo '
+      signal:
+          'Dažnai parodo, kad kažkas peržengė ribą arba atrodo '
           'neteisinga.',
       children: [
         _w('vertinantis', 'vertinanti', 'Critical', [
@@ -188,10 +217,16 @@ final SunburstWheel jausmuRatas = buildSunburst(
           _w('sustingęs', 'sustingusi', 'Numb'),
           _w('atsitraukęs', 'atsitraukusi', 'Withdrawn'),
         ]),
-        _w('frustruotas', 'frustruota', 'Frustrated', [
-          _w('sudirgęs', 'sudirgusi', 'Annoyed'),
-          _w('susierzinęs', 'susierzinusi', 'Infuriated'),
-        ], 'Paveiksle parašyta „frustuotas“.'),
+        _w(
+          'frustruotas',
+          'frustruota',
+          'Frustrated',
+          [
+            _w('sudirgęs', 'sudirgusi', 'Annoyed'),
+            _w('susierzinęs', 'susierzinusi', 'Infuriated'),
+          ],
+          'Paveiksle parašyta „frustuotas“.',
+        ),
         _w('agresyvus', 'agresyvi', 'Aggressive', [
           _w('priešiškas', 'priešiška', 'Hostile'),
           _w('provokuojantis', 'provokuojanti', 'Provoked'),
@@ -201,8 +236,13 @@ final SunburstWheel jausmuRatas = buildSunburst(
           _w('įsiutęs', 'įsiutusi', 'Furious'),
         ]),
         _w('kandus', 'kandi', 'Bitter', [
-          _w('pažeistas', 'pažeista', 'Violated', const [],
-              'Paveiksle parašyta „pažeista“.'),
+          _w(
+            'pažeistas',
+            'pažeista',
+            'Violated',
+            const [],
+            'Paveiksle parašyta „pažeista“.',
+          ),
           _w('pasipiktinęs', 'pasipiktinusi', 'Indignant'),
         ]),
         _w('pažemintas', 'pažeminta', 'Humiliated', [

@@ -11,7 +11,8 @@ bool plausibleFeminine(String masculine, String feminine) {
   if (m.endsWith('ęs')) {
     return f == '${stem(2)}usi' || f == '${stem(2)}iusi';
   }
-  if (m.endsWith('tis') && f == stem(1)) return true; // pasitikintis → pasitikinti
+  // pasitikintis → pasitikinti
+  if (m.endsWith('tis') && f == stem(1)) return true;
   if (m.endsWith('is')) return f == '${stem(2)}ė'; // bejėgis → bejėgė
   if (m.endsWith('us')) return f == '${stem(2)}i'; // ramus → rami
   if (m.endsWith('as')) return f == '${stem(2)}a'; // vienišas → vieniša
@@ -36,13 +37,23 @@ void main() {
         for (final form in [f.word.masculine, f.word.feminine]) {
           expect(form.trim(), form, reason: f.id);
           expect(form, isNotEmpty, reason: f.id);
-          expect(form, form.toLowerCase(), reason: '${f.id} is stored lowercase');
+          expect(
+            form,
+            form.toLowerCase(),
+            reason: '${f.id} is stored lowercase',
+          );
         }
-        expect(wordSources.containsKey(f.src), isTrue,
-            reason: '${f.id} has unknown source ${f.src}');
+        expect(
+          wordSources.containsKey(f.src),
+          isTrue,
+          reason: '${f.id} has unknown source ${f.src}',
+        );
         if (f.word.isGendered) {
-          expect(plausibleFeminine(f.word.masculine, f.word.feminine), isTrue,
-              reason: '${f.word.masculine} / ${f.word.feminine}');
+          expect(
+            plausibleFeminine(f.word.masculine, f.word.feminine),
+            isTrue,
+            reason: '${f.word.masculine} / ${f.word.feminine}',
+          );
         }
       }
       for (final family in wheel.families) {
@@ -63,14 +74,17 @@ void main() {
     final roots = jausmuRatas.roots;
 
     test('families clockwise from 12 o\'clock, as in the picture', () {
-      expect([for (final r in roots) r.family.name.masculine], [
-        'nuostaba',
-        'džiaugsmas',
-        'liūdesys',
-        'pasibjaurėjimas',
-        'pyktis',
-        'baimė',
-      ]);
+      expect(
+        [for (final r in roots) r.family.name.masculine],
+        [
+          'nuostaba',
+          'džiaugsmas',
+          'liūdesys',
+          'pasibjaurėjimas',
+          'pyktis',
+          'baimė',
+        ],
+      );
     });
 
     test('6 / 41 / 82 words, two outer words under every middle word', () {
@@ -82,8 +96,10 @@ void main() {
     });
 
     test('every word comes from the Pokalbių gidas picture', () {
-      expect(jausmuRatas.feelings.every((f) => f.src == 'pokalbiu-gidas'),
-          isTrue);
+      expect(
+        jausmuRatas.feelings.every((f) => f.src == 'pokalbiu-gidas'),
+        isTrue,
+      );
     });
   });
 }
