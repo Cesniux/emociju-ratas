@@ -138,6 +138,138 @@ Pokalbių gidas, pagal G. Roberts ir G. Willcox. Kasdien: nuo bendro jausmo iki 
 | kraštas | baimingas | baiminga | Frightened | Pokalbių gidas |  |
 | kraštas | bejėgis | bejėgė | Helpless | Pokalbių gidas |  |
 
+## Plutchiko gėlė
+
+R. Plutchik, 1980. Kai nori suprasti, kiek stiprus jausmas ir su kuo jis maišosi.
+
+| Lygis | Vyr. | Mot. | EN | Šaltinis | Pastaba |
+|---|---|---|---|---|---|
+| silpnas | ramybė | · | serenity | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | džiaugsmas | · | joy | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | ekstazė | · | ecstasy | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| silpnas | priėmimas | · | acceptance | Psichologė K. Paradnikė, LKETA (2021) | Paveiksle „susitaikymas“. |
+| **pagrindinis** | pasitikėjimas | · | trust | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | susižavėjimas | · | admiration | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| silpnas | nuogąstavimas | · | apprehension | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | baimė | · | fear | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | siaubas | · | terror | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| silpnas | išsiblaškymas | · | distraction | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | nuostaba | · | surprise | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | apstulbimas | · | amazement | Psichologė K. Paradnikė, LKETA (2021) | Paveiksle „nustebimas“. |
+| silpnas | susimąstymas | · | pensiveness | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | liūdesys | · | sadness | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | sielvartas | · | grief | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| silpnas | nuobodulys | · | boredom | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | pasibjaurėjimas | · | disgust | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | neapykanta | · | loathing | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| silpnas | apmaudas | · | annoyance | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | pyktis | · | anger | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| stiprus | įniršis | · | rage | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| silpnas | susidomėjimas | · | interest | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| **pagrindinis** | laukimas | · | anticipation | Psichologė K. Paradnikė, LKETA (2021) | Paveiksle „nuojauta“. |
+| stiprus | budrumas | · | vigilance | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys džiaugsmas + pasitikėjimas | meilė | · | love | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys pasitikėjimas + baimė | palankumas | · | submission | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys baimė + nuostaba | pagarbi baimė | · | awe | Psichologė K. Paradnikė, LKETA (2021) | Paveiksle „pagarba“. |
+| mišinys nuostaba + liūdesys | nepritarimas | · | disapproval | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys liūdesys + pasibjaurėjimas | gailestis | · | remorse | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys pasibjaurėjimas + pyktis | panieka | · | contempt | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys pyktis + laukimas | agresyvumas | · | aggressiveness | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| mišinys laukimas + džiaugsmas | optimizmas | · | optimism | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+
+## Energija ir malonumas
+
+J. Russell, 1980. Kai žodžio dar nėra: pradėk nuo kūno.
+
+| Lygis | Vyr. | Mot. | EN | Šaltinis | Pastaba |
+|---|---|---|---|---|---|
+| 8°, 0.6 | atidus | atidi | alert | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 21°, 0.94 | nustebęs | nustebusi | surprised | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 46°, 0.93 | entuziastingas | entuziastinga | enthusiastic | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 62°, 0.66 | linksmas | linksma | merry | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 74°, 0.93 | laimingas | laiminga | happy | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 116°, 0.94 | patenkintas | patenkinta | content | M. B. Rosenberg, „Nesmurtinis bendravimas“ |  |
+| 132°, 0.64 | atsipalaidavęs | atsipalaidavusi | relaxed | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 148°, 0.94 | ramus | rami | calm | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 166°, 0.62 | mieguistas | mieguista | sleepy | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 193°, 0.93 | pavargęs | pavargusi | tired | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 220°, 0.95 | nuobodžiaujantis | nuobodžiaujanti | bored | Lengvos mintys |  |
+| 236°, 0.62 | prislėgtas | prislėgta | depressed | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 250°, 0.94 | liūdnas | liūdna | sad | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 262°, 0.66 | nusiminęs | nusiminusi | upset | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 290°, 0.94 | nerimaujantis | nerimaujanti | nervous | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 304°, 0.62 | susierzinęs | susierzinusi | irritable | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 318°, 0.94 | išsigandęs | išsigandusi | afraid | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 334°, 0.64 | piktas | pikta | angry | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+| 348°, 0.93 | įsitempęs | įsitempusi | tense | Lietuviškas PANAS-X (Vilniaus universitetas, 2022) |  |
+
+## Jausmų šeimos
+
+P. Shaver ir kt., 1987; W. G. Parrott, 2001. Su meile: kaip žmonės patys grupuoja jausmų žodžius.
+
+| Lygis | Vyr. | Mot. | EN | Šaltinis | Pastaba |
+|---|---|---|---|---|---|
+| **šeima** | meilė | · | Love | Psichoterapeutė L. Matulionienė |  |
+| vidurys | švelnumas | · | Affection / tenderness | Psichoterapeutė L. Matulionienė |  |
+| kraštas | rūpinimasis | · | caring | Psichoterapeutė L. Matulionienė |  |
+| kraštas | atjauta | · | compassion | Psichologė K. Paradnikė, LKETA (2021) |  |
+| vidurys | aistra | · | Lust / passion | Psichologė K. Paradnikė, LKETA (2021) |  |
+| kraštas | apsvaigimas | · | infatuation | Psichoterapeutė L. Matulionienė |  |
+| vidurys | ilgesys | · | Longing | Psichoterapeutė L. Matulionienė |  |
+| **šeima** | džiaugsmas | · | Joy | Psichoterapeutė L. Matulionienė |  |
+| vidurys | džiugesys | · | Cheerfulness | Psichoterapeutė L. Matulionienė |  |
+| kraštas | laimė | · | happiness | Psichoterapeutė L. Matulionienė |  |
+| kraštas | palaima | · | bliss | Psichoterapeutė L. Matulionienė |  |
+| kraštas | euforija | · | euphoria | Psichoterapeutė L. Matulionienė |  |
+| kraštas | gėrėjimasis | · | delight | Psichoterapeutė L. Matulionienė |  |
+| vidurys | užsidegimas | · | Zest | Psichoterapeutė L. Matulionienė |  |
+| kraštas | energingumas | · | zest / vigour | Psichoterapeutė L. Matulionienė |  |
+| vidurys | pasitenkinimas | · | Contentment | Psichoterapeutė L. Matulionienė |  |
+| kraštas | malonumas | · | pleasure | Psichoterapeutė L. Matulionienė |  |
+| vidurys | pasididžiavimas | · | Pride | Psichoterapeutė L. Matulionienė |  |
+| vidurys | optimizmas | · | Optimism | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| kraštas | viltis | · | hope | Psichoterapeutė L. Matulionienė |  |
+| vidurys | susižavėjimas | · | Enthrallment | Psichoterapeutė L. Matulionienė |  |
+| vidurys | palengvėjimas | · | Relief | Psichoterapeutė L. Matulionienė |  |
+| **šeima** | nuostaba | · | Surprise | Psichoterapeutė L. Matulionienė |  |
+| vidurys | apstulbimas | · | amazement | Psichoterapeutė L. Matulionienė |  |
+| vidurys | netikėtumas | · | surprise | Psichoterapeutė L. Matulionienė |  |
+| vidurys | šokas | · | astonishment / shock | Psichoterapeutė L. Matulionienė |  |
+| **šeima** | pyktis | · | Anger | Psichoterapeutė L. Matulionienė |  |
+| vidurys | susierzinimas | · | Irritation | Psichoterapeutė L. Matulionienė |  |
+| kraštas | apmaudas | · | annoyance | Psichoterapeutė L. Matulionienė |  |
+| vidurys | įniršis | · | Rage | Psichoterapeutė L. Matulionienė |  |
+| kraštas | įtūžis | · | fury | Psichologė K. Paradnikė, LKETA (2021) |  |
+| kraštas | pasipiktinimas | · | outrage | Psichoterapeutė L. Matulionienė |  |
+| kraštas | priešiškumas | · | hostility | Psichoterapeutė L. Matulionienė |  |
+| kraštas | neapykanta | · | hate | Psichoterapeutė L. Matulionienė |  |
+| vidurys | pasibjaurėjimas | · | Disgust | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| kraštas | panieka | · | contempt | Plutchiko emocijų ratas (verslas.in, 2013) |  |
+| vidurys | pavydas | · | Envy / jealousy | Psichoterapeutė L. Matulionienė |  |
+| **šeima** | liūdesys | · | Sadness | Psichoterapeutė L. Matulionienė |  |
+| vidurys | neviltis | · | Despair | Psichologė K. Paradnikė, LKETA (2021) |  |
+| kraštas | beviltiškumas | · | hopelessness | Psichologė K. Paradnikė, LKETA (2021) |  |
+| kraštas | prislėgtumas | · | depression | Psichologė K. Paradnikė, LKETA (2021) |  |
+| vidurys | sielvartas | · | Sorrow / grief | Psichoterapeutė L. Matulionienė |  |
+| kraštas | susikrimtimas | · | heartache | Psichologė K. Paradnikė, LKETA (2021) |  |
+| vidurys | nusivylimas | · | Disappointment | Psichoterapeutė L. Matulionienė |  |
+| vidurys | gėda | · | Shame | Psichoterapeutė L. Matulionienė |  |
+| kraštas | kaltė | · | guilt | Psichoterapeutė L. Matulionienė |  |
+| kraštas | apgailestavimas | · | regret | Psichoterapeutė L. Matulionienė |  |
+| kraštas | sąžinės graužimas | · | remorse | Psichoterapeutė L. Matulionienė |  |
+| vidurys | vienišumas | · | Neglect / loneliness | Psichoterapeutė L. Matulionienė |  |
+| kraštas | apleistumas | · | abandonment | Psichoterapeutė L. Matulionienė |  |
+| vidurys | užuojauta | · | Sympathy | Psichoterapeutė L. Matulionienė |  |
+| kraštas | pasigailėjimas | · | pity | Psichoterapeutė L. Matulionienė |  |
+| **šeima** | baimė | · | Fear | Psichoterapeutė L. Matulionienė |  |
+| vidurys | siaubas | · | Horror | Psichoterapeutė L. Matulionienė |  |
+| kraštas | panika | · | panic | Psichoterapeutė L. Matulionienė |  |
+| kraštas | išgąstis | · | fright | Psichoterapeutė L. Matulionienė |  |
+| vidurys | nerimas | · | Nervousness | Psichoterapeutė L. Matulionienė |  |
+| kraštas | įtampa | · | tenseness | Psichoterapeutė L. Matulionienė |  |
+| kraštas | nuogąstavimas | · | apprehension | Psichologė K. Paradnikė, LKETA (2021) |  |
+| kraštas | susirūpinimas | · | worry | Psichologė K. Paradnikė, LKETA (2021) |  |
+
 ## Pakeitimai ir abejonės
 
 - Jausmų ratas: **smalsus**. Paveiksle parašyta „smalus“.
@@ -146,9 +278,17 @@ Pokalbių gidas, pagal G. Roberts ir G. Willcox. Kasdien: nuo bendro jausmo iki 
 - Jausmų ratas: **vienišas**. Paveiksle po Pasibjaurėjimu, o Roberts rate po liūdesiu.
 - Jausmų ratas: **frustruotas**. Paveiksle parašyta „frustuotas“.
 - Jausmų ratas: **pažeistas**. Paveiksle parašyta „pažeista“.
+- Plutchiko gėlė: **priėmimas**. Paveiksle „susitaikymas“.
+- Plutchiko gėlė: **apstulbimas**. Paveiksle „nustebimas“.
+- Plutchiko gėlė: **laukimas**. Paveiksle „nuojauta“.
+- Plutchiko gėlė: **pagarbi baimė**. Paveiksle „pagarba“.
 
 ## Šaltiniai
 
-- **Pokalbių gidas**. Emocijų ratas „Kaip dabar jautiesi?“, lietuviška G. Roberts jausmų rato versija. Paveikslėlis buvo programėlėje.
-- **R. Plutchiko emocijų ratas (lietuviškas)**. Lietuviškas R. Plutchiko rato paveikslėlis, buvęs programėlėje.
-- **Lengvos mintys**. Emocijų ratas (lengvosmintys.lt), buvęs programėlėje. https://www.lengvosmintys.lt
+- **Pokalbių gidas**. Emocijų ir jausmų ratas „Kaip dabar jautiesi?“, lietuviška G. Roberts jausmų rato versija. https://pokalbiugidas.lt/produktas/emociju-ir-jausmu-ratas/
+- **Plutchiko emocijų ratas (verslas.in, 2013)**. Lietuviškas R. Plutchiko rato paveikslėlis. http://www.verslas.in/izvalgos/plutchiko-emociju-ratas/
+- **Psichologė K. Paradnikė, LKETA (2021)**. Plakatas „Jausmai ir emocijos“, Lietuvos kognityvinės ir elgesio terapijos asociacija. https://lketa.lt/wp-content/uploads/2021/08/Emocijos-didelis-a2-lapas.pdf
+- **Psichoterapeutė L. Matulionienė**. Jausmų sąrašas, Vilniaus psichodinaminės psichoterapijos centras. https://www.vilniausppc.lt/jausmai-subjektyvus-psichologiniai-patyrimai/
+- **Lietuviškas PANAS-X (Vilniaus universitetas, 2022)**. K. Petraškaitė, N. Grigutytė. Nuotaikos skalės žodžiai, patikrinti tyrime su 322 suaugusiaisiais. https://doi.org/10.5708/EJMH.17.2022.3.4
+- **M. B. Rosenberg, „Nesmurtinis bendravimas“**. Jausmų sąrašas, leidykla „Meilės kelias“, 2021.
+- **Lengvos mintys**. Psichologų praktika; emocijų ratas ir straipsnis „Kas yra emocijos?“ (2019). https://lengvosmintys.lt/emocijos/

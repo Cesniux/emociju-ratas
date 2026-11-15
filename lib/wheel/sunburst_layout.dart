@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart' show StringCharacters;
 
 import '../data/models.dart';
 import '../theme/palette.dart';
@@ -70,6 +71,19 @@ class SunburstLayout extends WheelLayout {
 
   bool get isCompact => radius < 230;
 
+  /// Single-line core names sit in the outer part of the core ring, where
+  /// the arc is longer; two-line names sit a little lower.
+  double _coreRadius(int lines) =>
+      stops[0] + (stops[1] - stops[0]) * (lines == 1 ? 0.64 : 0.56);
+
+  /// Only long names (11+ letters, e.g. "Pasibjaurėjimas") may break.
+  (String, String)? _coreSplit(String name) =>
+      name.characters.length >= 11 ? splitSyllables(name) : null;
+
+  /// Outer ring drawn as one band per middle word while its words are too
+  /// small to read: fewer lines, calmer.
+  final List<(Path, int, double)> _outerBands = [];
+
   void _build(double coreScale) {
     final R = radius;
     final twoRings = model.depth >= 2;
@@ -84,7 +98,6 @@ class SunburstLayout extends WheelLayout {
     final roots = model.roots;
     final n = roots.length;
     final totalLeaves = roots.fold<int>(0, (s, r) => s + r.leafCount);
-    final rc = (stops[0] + stops[1]) / 2;
     final coreStyle = wheelLabelStyle(
       colors.ink,
       14 * coreScale,
@@ -94,8 +107,8 @@ class SunburstLayout extends WheelLayout {
     for (final r in roots) {
       final name = sentenceCase(r.family.name.of(form));
       final one = measure100(name, coreStyle).width * 0.14 * coreScale;
-      final split = splitSyllables(name);
-      var need = (one + 12) / rc;
+      var need = (one + 12) / _coreRadius(1);
+      final split = _coreSplit(name);
       if (split != null) {
         final two =
             math.max(
@@ -104,7 +117,7 @@ class SunburstLayout extends WheelLayout {
             ) *
             0.14 *
             coreScale;
-        need = math.min(need, (two + 12) / rc);
+        need = math.min(need, (two + 12) / _coreRadius(2));
       }
       floors.add(math.min(need, tau / n * 1.5));
     }
@@ -201,6 +214,21 @@ class SunburstLayout extends WheelLayout {
             corner: corner,
           ),
         );
+        if (m.children.isNotEmpty && twoRings) {
+          _outerBands.add((
+            sectorPath(
+              center,
+              stops[2],
+              stops[3],
+              ma,
+              ms,
+              gap: gap,
+              corner: math.min(corner, 3),
+            ),
+            i,
+            math.min(corner, 3),
+          ));
+        }
         var oa = ma;
         for (final o in m.children) {
           final os = ms / m.children.length;
@@ -241,42 +269,54 @@ class SunburstLayout extends WheelLayout {
 
   double _layoutCore(double coreScale) {
     final style = wheelLabelStyle(colors.ink, 100, weight: FontWeight.w600);
-    final rc = (stops[0] + stops[1]) / 2;
     final thickness = stops[1] - stops[0] - 6;
     double best = 18 * coreScale;
-    final fits = <(double, List<String>)>[];
+    final split = <(String, String)?>[];
     for (final seg in _core) {
       final name = sentenceCase(seg.feeling.word.of(form));
-      final arc = rc * seg.sweep - 10;
       final m1 = measure100(name, style);
-      final one = math.min(arc / m1.width, thickness / m1.height) * 100;
-      var choice = (one, [name]);
-      final split = splitSyllables(name);
-      if (split != null && one < 15) {
+      final one =
+          math.min(
+            (_coreRadius(1) * seg.sweep - 10) / m1.width,
+            thickness / m1.height,
+          ) *
+          100;
+      var fit = one;
+      final s2 = _coreSplit(name);
+      split.add(s2);
+      if (s2 != null && one < 15) {
         final w = math.max(
-          measure100(split.$1, style).width,
-          measure100(split.$2, style).width,
+          measure100(s2.$1, style).width,
+          measure100(s2.$2, style).width,
         );
-        final two = math.min(arc / w, thickness / (2 * m1.height)) * 100;
-        if (two > one) choice = (two, [split.$1, split.$2]);
+        final two =
+            math.min(
+              (_coreRadius(2) * seg.sweep - 10) / w,
+              thickness / (2 * m1.height),
+            ) *
+            100;
+        fit = math.max(one, two);
       }
-      fits.add(choice);
-      best = math.min(best, choice.$1);
+      best = math.min(best, fit);
     }
-    final size = best.clamp(6.0, 18 * coreScale);
+    final size = best.clamp(6.0, 18 * coreScale).toDouble();
     for (var i = 0; i < _core.length; i++) {
       final seg = _core[i];
       final name = sentenceCase(seg.feeling.word.of(form));
-      final m1 = measure100(name, style);
-      final singleFits = m1.width * size / 100 <= rc * seg.sweep - 10;
+      final singleFits =
+          measure100(name, style).width * size / 100 <=
+          _coreRadius(1) * seg.sweep - 10;
+      final lines = singleFits || split[i] == null
+          ? [name]
+          : [split[i]!.$1, split[i]!.$2];
       seg.arc = ArcLabel.layout(
-        lines: singleFits ? [name] : fits[i].$2,
+        lines: lines,
         style: wheelLabelStyle(colors.ink, size, weight: FontWeight.w600),
-        radius: rc,
+        radius: _coreRadius(lines.length),
         angle: seg.mid,
       );
     }
-    return size.toDouble();
+    return size;
   }
 
   double _layoutRadial(
@@ -336,10 +376,22 @@ class SunburstLayout extends WheelLayout {
 
   @override
   void paintBase(Canvas canvas, double zoomStep) {
+    final outerReadable = LabelMin.visible(outerFont, LabelMin.word, zoomStep);
     for (final s in _all) {
+      if (s.ring == 2 && !outerReadable) continue;
       paintRounded(canvas, s.path, _fill(s), s.corner);
     }
-    if (LabelMin.visible(coreFont, LabelMin.core, zoomStep)) {
+    if (!outerReadable) {
+      for (final (path, family, corner) in _outerBands) {
+        paintRounded(
+          canvas,
+          path,
+          Palette.fill(model.roots[family].family.hue, Tier.soft, brightness),
+          corner,
+        );
+      }
+    }
+    if (zoomStep > 0) {
       for (final s in _core) {
         s.arc?.paint(canvas, center);
       }
@@ -375,9 +427,7 @@ class SunburstLayout extends WheelLayout {
             1.5,
           );
           paintRounded(canvas, s.path, _fill(s), s.corner);
-          if (LabelMin.visible(coreFont, LabelMin.core, zoomStep)) {
-            s.arc?.paint(canvas, center);
-          }
+          if (zoomStep > 0) s.arc?.paint(canvas, center);
         }
       }
     }
@@ -392,7 +442,7 @@ class SunburstLayout extends WheelLayout {
         s.corner,
       );
       switch (s.ring) {
-        case 0 when LabelMin.visible(coreFont, LabelMin.core, zoomStep):
+        case 0 when zoomStep > 0:
           s.arc?.paint(canvas, center);
         case 1 when LabelMin.visible(middleFont, LabelMin.word, zoomStep):
           s.label?.paint(canvas);

@@ -131,3 +131,8 @@ void paintRoundedOutline(
       ..isAntiAlias = true,
   );
 }
+
+/// Like num.clamp, but never throws when [lo] > [hi] (tiny thumbnails):
+/// the value then sits in the middle.
+double clampSafe(double value, double lo, double hi) =>
+    lo > hi ? (lo + hi) / 2 : value.clamp(lo, hi).toDouble();

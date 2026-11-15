@@ -10,9 +10,10 @@ Future<MemorySettingsStore> pumpApp(
   Size size = const Size(402, 874),
   Brightness brightness = Brightness.light,
   double textScale = 1,
+  double pixelRatio = 3,
 }) async {
-  tester.view.physicalSize = size * 3;
-  tester.view.devicePixelRatio = 3;
+  tester.view.physicalSize = size * pixelRatio;
+  tester.view.devicePixelRatio = pixelRatio;
   tester.platformDispatcher.platformBrightnessTestValue = brightness;
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
   addTearDown(tester.view.reset);

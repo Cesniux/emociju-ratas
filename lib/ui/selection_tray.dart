@@ -68,62 +68,75 @@ class SelectionTray extends StatelessWidget {
                 : Row(
                     children: [
                       Expanded(
-                        child: SizedBox(
-                          height: Sizes.trayHeight,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Space.xs,
-                              vertical: Space.m,
-                            ),
-                            itemCount: items.length,
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(width: Space.s),
-                            itemBuilder: (context, i) {
-                              final w = items[i];
-                              final label = sentenceCase(w.word.of(form));
-                              return Semantics(
-                                button: true,
-                                label: S.remove(label),
-                                excludeSemantics: true,
-                                onTap: () => scope.selection.remove(w.key),
-                                child: Material(
-                                  color: Palette.fill(
-                                    w.hue,
-                                    Tier.strong,
-                                    c.brightness,
-                                  ),
-                                  shape: const StadiumBorder(),
-                                  child: InkWell(
-                                    customBorder: const StadiumBorder(),
-                                    onTap: () => scope.selection.remove(w.key),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: Space.l,
-                                        right: Space.s,
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            label,
-                                            style: text.labelLarge?.copyWith(
+                        child: ShaderMask(
+                          // A soft fade where the row scrolls on.
+                          blendMode: BlendMode.dstIn,
+                          shaderCallback: (rect) => LinearGradient(
+                            colors: const [
+                              Colors.black,
+                              Colors.black,
+                              Colors.transparent,
+                            ],
+                            stops: [0, 1 - 28 / rect.width, 1],
+                          ).createShader(rect),
+                          child: SizedBox(
+                            height: Sizes.trayHeight,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: Space.xs,
+                                vertical: Space.m,
+                              ),
+                              itemCount: items.length,
+                              separatorBuilder: (_, _) =>
+                                  const SizedBox(width: Space.s),
+                              itemBuilder: (context, i) {
+                                final w = items[i];
+                                final label = sentenceCase(w.word.of(form));
+                                return Semantics(
+                                  button: true,
+                                  label: S.remove(label),
+                                  excludeSemantics: true,
+                                  onTap: () => scope.selection.remove(w.key),
+                                  child: Material(
+                                    color: Palette.fill(
+                                      w.hue,
+                                      Tier.strong,
+                                      c.brightness,
+                                    ),
+                                    shape: const StadiumBorder(),
+                                    child: InkWell(
+                                      customBorder: const StadiumBorder(),
+                                      onTap: () =>
+                                          scope.selection.remove(w.key),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: Space.l,
+                                          right: Space.s,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              label,
+                                              style: text.labelLarge?.copyWith(
+                                                color: c.ink,
+                                              ),
+                                            ),
+                                            const SizedBox(width: Space.xs),
+                                            Icon(
+                                              Icons.close_rounded,
+                                              size: 18,
                                               color: c.ink,
                                             ),
-                                          ),
-                                          const SizedBox(width: Space.xs),
-                                          Icon(
-                                            Icons.close_rounded,
-                                            size: 18,
-                                            color: c.ink,
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),

@@ -1,4 +1,7 @@
+import 'package:emociju_ratas/data/energija.dart';
 import 'package:emociju_ratas/data/jausmu_ratas.dart';
+import 'package:emociju_ratas/data/jausmu_seimos.dart';
+import 'package:emociju_ratas/data/plutchik.dart';
 import 'package:emociju_ratas/data/sources.dart';
 import 'package:emociju_ratas/data/wheels.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -100,6 +103,83 @@ void main() {
         jausmuRatas.feelings.every((f) => f.src == 'pokalbiu-gidas'),
         isTrue,
       );
+    });
+  });
+
+  group('Plutchiko gėlė', () {
+    test('8 petals in Plutchik order, mild → basic → intense', () {
+      expect(
+        [for (final p in plutchik.petals) p.family.en],
+        [
+          'Joy',
+          'Trust',
+          'Fear',
+          'Surprise',
+          'Sadness',
+          'Disgust',
+          'Anger',
+          'Anticipation',
+        ],
+      );
+      final words = plutchik.feelings.map((f) => f.key).toSet();
+      expect(words, hasLength(32), reason: '24 petal words + 8 dyads');
+    });
+
+    test('dyads join neighbours; opposites are four petals apart', () {
+      for (var i = 0; i < plutchik.dyads.length; i++) {
+        expect(plutchik.dyads[i].a, i);
+        expect(plutchik.dyads[i].b, (i + 1) % 8);
+      }
+      expect(
+        plutchik.petals[plutchik.opposite(0)].basic.word.masculine,
+        'liūdesys',
+      );
+      expect(
+        plutchik.petals[plutchik.opposite(2)].basic.word.masculine,
+        'pyktis',
+      );
+    });
+  });
+
+  group('Energija ir malonumas', () {
+    test('every word sits inside the circle and in its own quadrant', () {
+      for (final p in energija.points) {
+        expect(p.radius, inInclusiveRange(0.3, 1.0), reason: p.feeling.id);
+        final q = energija.quadrantAt(p.valence, p.arousal);
+        expect(
+          p.feeling.familyId,
+          energija.quadrants[q].id,
+          reason: p.feeling.id,
+        );
+      }
+    });
+
+    test('nearest words come back nearest first', () {
+      final ramus = energija.points.firstWhere((p) => p.feeling.key == 'ramus');
+      final near = energija.nearest(ramus.valence, ramus.arousal);
+      expect(near.first.feeling.key, 'ramus');
+      expect(near, hasLength(4));
+    });
+  });
+
+  group('Jausmų šeimos', () {
+    test('six families with Meilė; 25 secondary words like Parrott', () {
+      expect(
+        [for (final r in jausmuSeimos.roots) r.family.name.masculine],
+        ['meilė', 'džiaugsmas', 'nuostaba', 'pyktis', 'liūdesys', 'baimė'],
+      );
+      expect(jausmuSeimos.roots.expand((r) => r.children), hasLength(25));
+    });
+
+    test('no word repeats its parent', () {
+      for (final r in jausmuSeimos.roots) {
+        for (final m in r.children) {
+          expect(m.feeling.key, isNot(r.core.key));
+          for (final o in m.children) {
+            expect(o.feeling.key, isNot(m.feeling.key));
+          }
+        }
+      }
     });
   });
 }

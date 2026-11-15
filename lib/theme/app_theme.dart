@@ -109,7 +109,7 @@ ThemeData buildTheme(Brightness brightness) {
       surfaceTintColor: Colors.transparent,
       showDragHandle: true,
       dragHandleColor: c.inkMuted.withValues(alpha: 0.45),
-      modalBarrierColor: c.ink.withValues(alpha: 0.18),
+      modalBarrierColor: c.ink.withValues(alpha: 0.10),
       elevation: 0,
       modalElevation: 0,
       constraints: const BoxConstraints(maxWidth: Sizes.readingMax),

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart' show StringCharacters;
 
 import '../data/models.dart';
 import '../theme/palette.dart';
@@ -139,7 +140,10 @@ class PetalLayout extends WheelLayout {
             100;
         var best = one;
         var chosenLines = [text];
-        final split = splitSyllables(text);
+        // Only long words (11+ letters) may break across two lines.
+        final split = text.characters.length >= 11
+            ? splitSyllables(text)
+            : null;
         if (split != null) {
           final w = math.max(
             measure100(split.$1, style100).width,
@@ -200,8 +204,8 @@ class PetalLayout extends WheelLayout {
       final h = label.height + 8;
       // Keep the pill inside the square.
       c = Offset(
-        c.dx.clamp(w / 2 + 1, side - w / 2 - 1),
-        c.dy.clamp(h / 2 + 1, side - h / 2 - 1),
+        clampSafe(c.dx, w / 2 + 1, side - w / 2 - 1),
+        clampSafe(c.dy, h / 2 + 1, side - h / 2 - 1),
       );
       _dyads.add(
         _DyadPill(
@@ -335,6 +339,16 @@ class PetalLayout extends WheelLayout {
 
   @override
   WheelHit? hitTest(Offset p) {
+    for (final b in _bands) {
+      if (b.path.contains(p)) {
+        final petal = model.petals[b.petal];
+        return PetalHit(
+          petal.family.id,
+          petal: b.petal,
+          feelingId: b.feeling.id,
+        );
+      }
+    }
     for (final d in _dyads) {
       final target = d.rect.outerRect.inflate(
         math.max(0, (48 - d.rect.outerRect.shortestSide) / 2),

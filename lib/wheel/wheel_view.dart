@@ -20,6 +20,7 @@ class WheelView extends StatefulWidget {
     required this.selection,
     this.onHit,
     this.maxSide = Sizes.wheelMax,
+    this.alignment = Alignment.center,
   });
 
   final WheelModel wheel;
@@ -27,6 +28,9 @@ class WheelView extends StatefulWidget {
   final Selection selection;
   final ValueChanged<WheelHit>? onHit;
   final double maxSide;
+
+  /// Where the wheel sits when the space is taller than it is wide.
+  final Alignment alignment;
 
   @override
   State<WheelView> createState() => WheelViewState();
@@ -219,7 +223,8 @@ class WheelViewState extends State<WheelView>
           ),
         );
 
-        return Center(
+        return Align(
+          alignment: widget.alignment,
           child: SizedBox.square(
             dimension: side,
             child: Stack(

@@ -1,8 +1,16 @@
+import 'energija.dart';
 import 'jausmu_ratas.dart';
+import 'jausmu_seimos.dart';
 import 'models.dart';
+import 'plutchik.dart';
 
 /// Every wheel in the app, in wheel-menu order.
-final List<WheelModel> allWheels = [jausmuRatas];
+final List<WheelModel> allWheels = [
+  jausmuRatas,
+  plutchik,
+  energija,
+  jausmuSeimos,
+];
 
 const String defaultWheelId = 'jausmu-ratas';
 

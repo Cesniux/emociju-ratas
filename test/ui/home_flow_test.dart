@@ -52,7 +52,12 @@ void main() {
       tester.getSemantics(
         find.byKey(const ValueKey('chip-jausmu-ratas/liudesys/nuobodus')),
       ),
-      isSemantics(isButton: true, isSelected: true, label: 'Nuobodus', hasTapAction: true),
+      isSemantics(
+        isButton: true,
+        isSelected: true,
+        label: 'Nuobodus',
+        hasTapAction: true,
+      ),
     );
 
     await tester.tap(find.byTooltip('Uždaryti'));

@@ -48,35 +48,12 @@ class CircumplexLayout extends WheelLayout {
 
   void _build() {
     final R = radius;
-    pillFont = (R / 15).clamp(11.0, 15.0);
-    final style = wheelLabelStyle(colors.ink, pillFont);
-    for (final p in model.points) {
-      final text = p.feeling.word.of(form);
-      final label = layoutText(text, style);
-      final w = label.width + 18;
-      final h = label.height + 10;
-      var c = polar(center, deg(p.clockDeg), p.radius * R * 0.9);
-      c = Offset(
-        c.dx.clamp(w / 2 + 2, side - w / 2 - 2),
-        c.dy.clamp(h / 2 + 2, side - h / 2 - 2),
-      );
-      _pills.add(
-        _Pill(
-          p,
-          PlacedLabel(
-            lines: [label],
-            anchor: c,
-            rotation: 0,
-            fontSize: pillFont,
-          ),
-          RRect.fromRectAndRadius(
-            Rect.fromCenter(center: c, width: w, height: h),
-            Radius.circular(h / 2),
-          ),
-          model.quadrantAt(p.valence, p.arousal),
-        ),
-      );
+    if (side < 200) {
+      pillFont = 0;
+      return; // thumbnail: colour only
     }
+    pillFont = (R / 16).clamp(10.5, 14.0);
+    final style = wheelLabelStyle(colors.ink, pillFont);
     final axisStyle = wheelLabelStyle(
       colors.inkMuted,
       (R / 19).clamp(10.5, 13.0),
@@ -91,6 +68,94 @@ class CircumplexLayout extends WheelLayout {
           anchor: polar(center, i * math.pi / 2, R - inset),
           rotation: 0,
           fontSize: axisStyle.fontSize!,
+        ),
+      );
+    }
+    final obstacles = [
+      for (final l in _axisLabels)
+        Rect.fromCenter(
+          center: l.anchor,
+          width: l.width + 8,
+          height: l.height + 6,
+        ),
+    ];
+    final labels = <TextPainter>[];
+    final centres = <Offset>[];
+    final sizes = <Size>[];
+    for (final p in model.points) {
+      final label = layoutText(p.feeling.word.of(form), style);
+      labels.add(label);
+      sizes.add(Size(label.width + 18, label.height + 10));
+      centres.add(polar(center, deg(p.clockDeg), p.radius * R * 0.9));
+    }
+    Offset clampIn(Offset c, Size s) {
+      // Inside the square, and inside the circle as far as possible.
+      var v = c - center;
+      final maxR = R - s.height / 2 - 2;
+      if (v.distance > maxR) v = v / v.distance * maxR;
+      final x = clampSafe(
+        center.dx + v.dx,
+        s.width / 2 + 2,
+        side - s.width / 2 - 2,
+      );
+      final y = clampSafe(
+        center.dy + v.dy,
+        s.height / 2 + 2,
+        side - s.height / 2 - 2,
+      );
+      return Offset(x, y);
+    }
+
+    Rect rectOf(int i) => Rect.fromCenter(
+      center: centres[i],
+      width: sizes[i].width,
+      height: sizes[i].height,
+    );
+    for (var i = 0; i < centres.length; i++) {
+      centres[i] = clampIn(centres[i], sizes[i]);
+    }
+    // Gentle push-apart: overlapping words move away from each other.
+    for (var pass = 0; pass < 200; pass++) {
+      var moved = false;
+      for (var i = 0; i < centres.length; i++) {
+        for (var j = i + 1; j < centres.length; j++) {
+          final a = rectOf(i).inflate(2);
+          final b = rectOf(j);
+          if (!a.overlaps(b)) continue;
+          var d = centres[j] - centres[i];
+          if (d.distance < 0.01) d = const Offset(0, 1);
+          final step = d / d.distance * 1.5;
+          centres[i] = clampIn(centres[i] - step, sizes[i]);
+          centres[j] = clampIn(centres[j] + step, sizes[j]);
+          moved = true;
+        }
+        for (final o in obstacles) {
+          final a = rectOf(i);
+          if (!a.overlaps(o)) continue;
+          var d = centres[i] - o.center;
+          if (d.distance < 0.01) d = const Offset(0, 1);
+          centres[i] = clampIn(centres[i] + d / d.distance * 1.5, sizes[i]);
+          moved = true;
+        }
+      }
+      if (!moved) break;
+    }
+    for (var i = 0; i < model.points.length; i++) {
+      final p = model.points[i];
+      _pills.add(
+        _Pill(
+          p,
+          PlacedLabel(
+            lines: [labels[i]],
+            anchor: centres[i],
+            rotation: 0,
+            fontSize: pillFont,
+          ),
+          RRect.fromRectAndRadius(
+            rectOf(i),
+            Radius.circular(sizes[i].height / 2),
+          ),
+          model.quadrantAt(p.valence, p.arousal),
         ),
       );
     }

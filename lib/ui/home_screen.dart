@@ -43,6 +43,12 @@ class HomeScreen extends StatelessWidget {
                   Semantics(
                     hint: S.wheelPillHint,
                     child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                          left: Space.l,
+                          right: Space.m,
+                        ),
+                      ),
                       onPressed: () => showWheelMenu(context),
                       iconAlignment: IconAlignment.end,
                       icon: const Icon(Icons.expand_more_rounded),
@@ -50,6 +56,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: Space.m),
+                    ),
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) => const HowToScreen(),
@@ -83,6 +92,7 @@ class HomeScreen extends StatelessWidget {
                 form: scope.settings.wordForm,
                 selection: scope.selection,
                 onHit: (hit) => showFocusSheet(context, wheel, hit),
+                alignment: const Alignment(0, -0.4),
               );
 
               return LayoutBuilder(
