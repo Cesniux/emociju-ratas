@@ -2,6 +2,7 @@ import 'package:emociju_ratas/data/energija.dart';
 import 'package:emociju_ratas/data/jausmu_ratas.dart';
 import 'package:emociju_ratas/data/jausmu_seimos.dart';
 import 'package:emociju_ratas/data/plutchik.dart';
+import 'package:emociju_ratas/data/science.dart';
 import 'package:emociju_ratas/data/sources.dart';
 import 'package:emociju_ratas/data/wheels.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -63,6 +64,14 @@ void main() {
         expect(family.signal.trim(), isNotEmpty, reason: family.id);
       }
     }
+  });
+
+  test('every source is cited by a card, and every citation exists', () {
+    final cited = {for (final c in guideCards) ...c.refs};
+    final listed = {for (final r in references) r.id};
+    expect(cited.difference(listed), isEmpty, reason: 'cited, not listed');
+    expect(listed.difference(cited), isEmpty, reason: 'listed, never cited');
+    expect(listed, hasLength(references.length), reason: 'duplicate ids');
   });
 
   test('wheel ids resolve and unknown ids fall back to the default', () {

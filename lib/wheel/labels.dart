@@ -40,87 +40,6 @@ TextPainter layoutText(String text, TextStyle style) => TextPainter(
   return r;
 }
 
-const _vowels = 'aąeęėiįyouųū';
-
-/// Two-consonant starts a Lithuanian syllable can have (smagu, stalas,
-/// bloga…); "dž" and "ch" are one sound and stay together.
-const _onsets = {
-  'st',
-  'sk',
-  'sp',
-  'sm',
-  'sn',
-  'sl',
-  'sv',
-  'šk',
-  'šl',
-  'šm',
-  'šn',
-  'šp',
-  'št',
-  'šv',
-  'žl',
-  'žm',
-  'žv',
-  'bl',
-  'br',
-  'dr',
-  'gl',
-  'gr',
-  'kl',
-  'kr',
-  'kv',
-  'pl',
-  'pr',
-  'tr',
-  'tv',
-  'dv',
-  'gv',
-  'zv',
-  'dž',
-  'ch',
-  'fl',
-  'fr',
-};
-
-/// Splits a Lithuanian word in two at a syllable boundary near its middle
-/// (pa-sib-jau-rė-ji-mas → "Pasibjau-" + "rėjimas"). Null for short words.
-(String, String)? splitSyllables(String word) {
-  final chars = word.characters.toList();
-  if (chars.length < 7) return null;
-  bool isVowel(int i) => _vowels.contains(chars[i].toLowerCase());
-  final groups = <(int, int)>[];
-  for (var i = 0; i < chars.length;) {
-    if (isVowel(i)) {
-      var j = i;
-      while (j < chars.length && isVowel(j)) {
-        j++;
-      }
-      groups.add((i, j));
-      i = j;
-    } else {
-      i++;
-    }
-  }
-  final boundaries = <int>[];
-  for (var g = 0; g + 1 < groups.length; g++) {
-    final from = groups[g].$2;
-    final to = groups[g + 1].$1;
-    final k = to - from;
-    if (k <= 0) continue;
-    final lastTwo = k >= 2
-        ? '${chars[to - 2]}${chars[to - 1]}'.toLowerCase()
-        : '';
-    boundaries.add(_onsets.contains(lastTwo) ? to - 2 : to - 1);
-  }
-  boundaries.removeWhere((b) => b < 3 || chars.length - b < 3);
-  if (boundaries.isEmpty) return null;
-  final mid = chars.length / 2;
-  boundaries.sort((a, b) => (a - mid).abs().compareTo((b - mid).abs()));
-  final at = boundaries.first;
-  return ('${chars.take(at).join()}-', chars.skip(at).join());
-}
-
 /// Fitting a word along a radius, in a slice of the wheel: the sunburst
 /// rings and the centre of Plutchik's flower.
 class RadialFit {
@@ -146,6 +65,20 @@ class RadialFit {
     // (b - pad - em·f)·sweep - across >= lines·lineEm·f.
     final byWidth =
         ((b - pad) * sweep - across) / (lines * lineEm + em * sweep);
+    return math.max(0, math.min(byLength, byWidth));
+  }
+
+  /// Largest font size (dp) for a one-line word [em] wide whose middle sits
+  /// halfway between [a] and [b], in a slice [sweep] wide: the same room at
+  /// both ends, and the slice still wide enough where the word begins.
+  double centredSize(double em, double sweep, double a, double b) {
+    final room = b - a - 2 * pad;
+    if (room <= 0 || em <= 0) return 0;
+    final byLength = room / em;
+    // The inner end (m - em·f/2) must leave room for the line:
+    // (m - em·f/2)·sweep - across >= lineEm·f.
+    final m = (a + b) / 2;
+    final byWidth = (m * sweep - across) / (lineEm + em * sweep / 2);
     return math.max(0, math.min(byLength, byWidth));
   }
 

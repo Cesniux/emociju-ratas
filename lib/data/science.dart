@@ -1,6 +1,11 @@
-// The "Kaip naudotis" reading page: short cards, honest claims, sources.
-// Pure Dart. Every claim is as strong as its source, no stronger
-// (design/RATIONALE.md). Help lines checked on pagalbasau.lt, 2026-11-14.
+// The reading pages ("Kaip naudotis" and "Kodėl emocijų ratas gali būti
+// naudingas?"): short cards, honest claims, sources. Pure Dart.
+//
+// Every sentence is as strong as its source, no stronger (design/
+// RATIONALE.md). Each claim was checked against the paper's abstract on
+// 2026-11-20 (Crossref, PubMed, OpenAlex); the notes per card say what the
+// studies did and did not show. Help lines checked on pagalbasau.lt,
+// 2026-11-14.
 
 final class Reference {
   const Reference(this.id, this.text, {this.doi, this.url});
@@ -60,11 +65,14 @@ const wheelStories = <String, String>{
       'J. Russell (1980) jausmus aprašė dviem klausimais: kiek malonu ir '
       'kiek energijos. Kai žodžio dar nėra, rask vietą, kuri tinka tavo '
       'būsenai: šalia jos ir bus artimiausi žodžiai.',
+  // Shaver et al. found love, joy, anger, sadness, fear "and perhaps
+  // surprise" at the basic level.
   'jausmu-seimos':
       'P. Shaver ir kolegos (1987) paprašė žmonių sugrupuoti 135 jausmų '
-      'žodžius ir rado šešias šeimas: meilę, džiaugsmą, nuostabą, pyktį, '
-      'liūdesį ir baimę. W. G. Parrott (2001) jas sudėjo į medį. Čia '
-      'lietuviška adaptacija iš esamų lietuviškų jausmų sąrašų.',
+      'žodžius. Išryškėjo kelios didelės šeimos: meilė, džiaugsmas, pyktis, '
+      'liūdesys, baimė ir, ne taip aiškiai, nuostaba. W. G. Parrott (2001) '
+      'jas sudėjo į medį. Čia lietuviška adaptacija iš esamų lietuviškų '
+      'jausmų sąrašų.',
 };
 
 const helplines = <Helpline>[
@@ -85,12 +93,15 @@ const helplines = <Helpline>[
 const helplinesAllUrl = 'https://pagalbasau.lt/gauk-pagalba/pagalbos-linijos/';
 
 const guideCards = <GuideCard>[
+  // Slow breathing raises heart-rate variability and relaxation (Zaccaro:
+  // 15 studies, < 10 breaths a minute; Laborde: 223 studies). Neither shows
+  // that a longer out-breath matters, so the step just says "slowly".
   GuideCard(
     id: 'kaip',
     title: 'Kaip naudotis ratu',
     kind: CardKind.steps,
     paragraphs: [
-      'Sustok akimirkai. Lėtai įkvėpk ir dar lėčiau iškvėpk.',
+      'Sustok akimirkai. Kelis kartus lėtai įkvėpk ir iškvėpk.',
       'Pradėk nuo vidurio: kuri spalva arčiausiai to, ką dabar jauti?',
       'Eik link krašto: ten tikslesni žodžiai. Jei jie smulkūs, priartink '
           'ratą dviem pirštais.',
@@ -105,24 +116,36 @@ const guideCards = <GuideCard>[
     title: 'Jei labai sunku',
     kind: CardKind.helplines,
     paragraphs: [
-      'Ratas padeda pastebėti jausmus, bet negydo ir nediagnozuoja. Jei '
-          'sunku jau kelias savaites arba jausmai trukdo gyventi, pasikalbėk '
-          'su šeimos gydytoju ar psichologu.',
+      'Ratas gali padėti pastebėti jausmus, bet jis negydo ir '
+          'nediagnozuoja. Jei sunku jau kelias savaites arba jausmai trukdo '
+          'gyventi, pasikalbėk su šeimos gydytoju ar psichologu.',
       'Jei sunku dabar, kreipkis į pagalbos liniją. Paliesk jos pavadinimą: '
           'atsivers svetainė, kurioje rasi, kaip susisiekti.',
     ],
     refs: ['bakker2016'],
   ),
+  // Lieberman 2007: labelling the emotion in pictures of faces lowered the
+  // amygdala's response (not "the brain's danger centre", and not one's own
+  // feelings). Kircanski 2012: lower skin response a week after exposure
+  // with labelling, same self-reported fear. Torre & Lieberman 2018: can
+  // attenuate, and may not feel like regulation. Levy-Gigi 2022: helped for
+  // intense pictures, raised distress for mild ones. Lyubomirsky 2006:
+  // analysing happy days in writing lowered well-being against replaying.
   GuideCard(
     id: 'kodel',
     title: 'Kodėl verta pavadinti jausmą',
     paragraphs: [
-      'Kai stiprų jausmą pavadini žodžiu, jis dažnai šiek tiek atvėsta. '
-          'Tyrimuose smegenų pavojaus centras reagavo silpniau, kai žmonės '
-          'įvardydavo, ką jaučia, o baimės tyrime kūnas po savaitės reagavo '
-          'ramiau.',
-      'Stebuklo čia nėra. Lengvam jausmui įvardijimas gali ir nepadėti, o '
-          'gerų akimirkų geriau neanalizuoti, tiesiog jomis pasidžiaugti.',
+      'Kai stiprų nemalonų jausmą pavadini žodžiu, jis gali šiek tiek '
+          'aprimti. Tyrimuose, kai žmonės emocijas įvardydavo žodžiais, su '
+          'jausmais susijusios smegenų sritys, pavyzdžiui, migdolinis kūnas, '
+          'reagavo silpniau.',
+      'Vorų bijantiems žmonėms tai padėjo terapijos metu: po savaitės jų '
+          'kūnas į vorą reagavo ramiau, nors patys sakė, kad bijo tiek pat.',
+      'Įdomu, kad žmonės dažnai nesitiki, jog tai padės, o tai vis tiek '
+          'padeda.',
+      'Lengvų nemalonių jausmų įvardyti nebūtina: viename tyrime tai '
+          'nemalonumą net šiek tiek padidino. O gerų akimirkų geriau '
+          'nenagrinėti, tiesiog jas prisiminti ir jomis pasidžiaugti.',
     ],
     refs: [
       'lieberman2007',
@@ -132,39 +155,56 @@ const guideCards = <GuideCard>[
       'lyubomirsky2006',
     ],
   ),
+  // Barrett 2001: more regulation of intense negative feelings. Kalokerinos
+  // 2019: strategies work better (not chosen differently). Kashdan 2015:
+  // less binge drinking and aggression under distress. Seah 2022: r = −.15,
+  // −.09 after negative affect, 17 studies. Starr 2020: in teenagers, low
+  // differentiation let severe stress predict later depression. Dejonckheere
+  // 2019: such measures add little beyond average mood. All correlational.
   GuideCard(
     id: 'tikslumas',
-    title: 'Tikslesnis žodis padeda',
+    title: 'Tikslesnis žodis gali padėti',
     paragraphs: [
       'Žmonės, kurie jausmus skiria smulkiau (ne tik „blogai“, bet '
-          '„nusivylimas“ ar „vienatvė“), dažniau ir sėkmingiau juos tvarko, o '
-          'patirdami stresą rečiau griebiasi to, kas kenkia.',
-      'Tai ryšys, ne įrodyta priežastis, ir jis nedidelis. Bet žodis rankoje '
-          'retai būna nereikalingas.',
+          '„nusivylimas“ ar „vienatvė“), stiprius jausmus dažniau bando '
+          'tvarkyti, ir jiems tai sekasi geriau.',
+      'Patyrę stresą, jie rečiau griebiasi to, kas kenkia, pavyzdžiui, '
+          'alkoholio ar pykčio protrūkių. Paaugliams, kurie nemalonius '
+          'jausmus skyrė smulkiau, stresas rečiau virto prislėgtumu.',
+      'Tai ryšys, o ne įrodyta priežastis, ir jis nedidelis. Bet jis '
+          'kartojasi daugelyje tyrimų.',
     ],
     refs: [
       'barrett2001',
       'kalokerinos2019',
       'kashdan2015',
       'seah2022',
-      'demiralp2012',
       'starr2020',
       'dejonckheere2019',
     ],
   ),
+  // Vedernikova 2021: an emotion-knowledge lesson raised negative emotion
+  // differentiation (RCT, n = 120). Seah & Coifman 2025: word prompts first
+  // raised it too (preliminary, n = 92 students). Experience sampling
+  // several times a day raised it (Hoemann 2021; Widdershoven 2019, in
+  // depression). Recognition beats recall (Budiu 2014). Alexithymia 9.9% in
+  // Finland, 10% in Germany. Only one small uncontrolled app study (Bruno).
   GuideCard(
     id: 'ismokti',
     title: 'To galima išmokti',
     paragraphs: [
-      'Jausmų žodyną galima praturtinti. Trumpos pamokos apie jausmų '
-          'žodžius ir žodžių sąrašai prieš akis padėjo žmonėms jausmus skirti '
-          'tiksliau. Panašiai veikia ir dažnas klausimas sau „kaip '
-          'jaučiuosi?“.',
-      'Ratas čia praverčia, nes žodį atpažinti lengviau nei jį prisiminti. '
-          'Maždaug vienam iš dešimties suaugusiųjų jausmus įvardyti sunku, ir '
-          'tai visai žmogiška.',
+      'Jausmus skirti tiksliau galima išmokti. Po trumpų pamokų apie '
+          'jausmus arba renkantis iš jausmų žodžių sąrašo žmonės vėliau '
+          'tiksliau skyrė nemalonius jausmus.',
+      'Padėjo ir dažnas klausimas sau „Kaip dabar jaučiuosi?“ kelis kartus '
+          'per dieną.',
+      'Rate žodžiai jau surašyti, o atpažinti žodį paprastai lengviau nei jį '
+          'prisiminti.',
+      'Suomijos ir Vokietijos tyrimuose maždaug vienam iš dešimties '
+          'suaugusiųjų jausmus atpažinti ir įvardyti buvo ypač sunku. Tai '
+          'visai žmogiška.',
       'Tyrimų, kurie tikrintų patį emocijų ratą, dar beveik nėra. Todėl '
-          'ratas čia tik žodžių pagalbininkas.',
+          'ratas čia yra tik žodžių pagalbininkas.',
     ],
     refs: [
       'vedernikova2021',
@@ -177,23 +217,37 @@ const guideCards = <GuideCard>[
       'bruno2024',
     ],
   ),
+  // Larsen & McGraw 2011: happy and sad at once during a bittersweet film,
+  // not merely switching between them. Berrios 2015: mixed emotions are
+  // "robust, measurable and non-artifactual" (63 studies).
   GuideCard(
     id: 'keli',
     title: 'Keli jausmai vienu metu',
     paragraphs: [
-      'Galima jausti ir džiaugsmą, ir liūdesį kartu, pavyzdžiui, '
-          'atsisveikinant. Mišrūs jausmai būna dažnai, todėl rate gali '
-          'rasti ne vieną savo žodį.',
+      'Galima jausti ir džiaugsmą, ir liūdesį tuo pačiu metu, pavyzdžiui, '
+          'atsisveikinant ar žiūrint graudų, bet gražų filmą.',
+      'Tyrimai rodo, kad tokie mišrūs jausmai yra tikri: tai ne klaida ir ne '
+          'svyravimas tarp dviejų nuotaikų. Todėl rate gali rasti ne vieną '
+          'savo žodį.',
     ],
     refs: ['larsen2011', 'berrios2015'],
   ),
+  // Verduyn & Lavrijsen 2015: 233 secondary-school students, 27 emotions
+  // from memory; sadness lasted longest; shame, surprise, fear, disgust,
+  // boredom, being touched, irritation and relief shortest; event
+  // importance and rumination explained the differences.
   GuideCard(
     id: 'praeina',
     title: 'Jausmai praeina',
     paragraphs: [
-      'Jausmai keičiasi. Nuostaba, baimė ar susierzinimas dažniausiai '
-          'praeina greitai. Liūdesys užsibūna ilgiausiai, ypač kai vis '
-          'grįžtame prie tų pačių minčių.',
+      'Jausmai keičiasi ir praeina. Viename tyrime nuostaba, baimė ar '
+          'susierzinimas praeidavo greičiausiai, o liūdesys užsibūdavo '
+          'ilgiausiai.',
+      'Ilgiau trukdavo jausmai, susiję su svarbiais įvykiais, ir tie, prie '
+          'kurių mintys vis sugrįždavo.',
+      'Todėl ilgiau užsibūnantis liūdesys yra įprastas. Bet jei jis '
+          'nepraeina kelias savaites, verta pasikalbėti su gydytoju ar '
+          'psichologu.',
     ],
     refs: ['verduyn2015'],
   ),
@@ -202,10 +256,11 @@ const guideCards = <GuideCard>[
     title: 'Kuo skiriasi ratai',
     kind: CardKind.wheels,
     paragraphs: [
-      'Kiekvienas ratas yra vieno tyrėjo žemėlapis tos pačios vietovės. '
-          'Mokslininkai vis dar ginčijasi, ar yra kelios pagrindinės '
-          'emocijos, ar smegenys kiekvieną jausmą sudeda iš kūno pojūčių ir '
-          'žodžių. Rinkis ratą, su kuriuo lengviau.',
+      'Kiekvienas ratas yra tos pačios vietovės žemėlapis, tik nubraižytas '
+          'kitų tyrėjų. Mokslininkai vis dar ginčijasi, ar yra kelios '
+          'pagrindinės emocijos, ar kiekvieną jausmą smegenys sukuria iš kūno '
+          'pojūčių ir to, ką žinome apie jausmus. Rinkis ratą, su kuriuo tau '
+          'lengviau.',
     ],
     refs: [
       'willcox1982',
@@ -221,17 +276,29 @@ const guideCards = <GuideCard>[
       'lindquist2015',
     ],
   ),
+  // Huckvale 2019: data went to third parties from 33 of 36 top apps for
+  // depression and smoking cessation. What is stored: lib/state/.
   GuideCard(
     id: 'apie',
     title: 'Apie programėlę',
     kind: CardKind.about,
     paragraphs: [
       'Niekas neišeina iš telefono: nėra paskyros, sekimo ar reklamų. '
-          'Programėlė prisimena tik paskutinį ratą ir žodžių formą.',
-      'Žodžiai paimti iš esamų lietuviškų emocijų ratų ir jausmų sąrašų.',
+          'Programėlė prisimena tik paskutinį ratą, žodžių formą, spalvas ir '
+          'kiek kartų ji buvo atidaryta.',
+      'Tai svarbu: viename tyrime net 33 iš 36 populiarių programėlių '
+          'depresijai ir rūkymui mesti siuntė duomenis kitoms įmonėms.',
+      'Žodžiai paimti iš esamų lietuviškų emocijų ratų ir jausmų sąrašų:',
     ],
     refs: ['huckvale2019'],
   ),
+];
+
+/// The six chapters of "Kodėl emocijų ratas gali būti naudingas?", in
+/// reading order.
+List<GuideCard> get tourCards => [
+  for (final c in guideCards)
+    if (c.kind == CardKind.text || c.kind == CardKind.wheels) c,
 ];
 
 const references = <Reference>[
@@ -245,8 +312,8 @@ const references = <Reference>[
   Reference(
     'laborde2022',
     'Laborde, S. ir kt. (2022). Effects of voluntary slow breathing on heart '
-        'rate and heart rate variability. Neuroscience & Biobehavioral '
-        'Reviews, 138, 104711.',
+        'rate and heart rate variability: a systematic review and a '
+        'meta-analysis. Neuroscience & Biobehavioral Reviews, 138, 104711.',
     doi: '10.1016/j.neubiorev.2022.104711',
   ),
   Reference(
@@ -305,14 +372,18 @@ const references = <Reference>[
   Reference(
     'barrett2001',
     'Barrett, L. F., Gross, J., Christensen, T. C., Benvenuto, M. (2001). '
-        'Knowing what you\'re feeling and knowing what to do about it. '
-        'Cognition and Emotion, 15(6), 713–724.',
+        'Knowing what you\'re feeling and knowing what to do about it: '
+        'mapping the relation between emotion differentiation and emotion '
+        'regulation. Cognition and Emotion, 15(6), 713–724.',
     doi: '10.1080/02699930143000239',
   ),
   Reference(
     'kalokerinos2019',
     'Kalokerinos, E. K., Erbas, Y., Ceulemans, E., Kuppens, P. (2019). '
-        'Differentiate to regulate. Psychological Science, 30(6), 863–879.',
+        'Differentiate to regulate: low negative emotion differentiation is '
+        'associated with ineffective use but not selection of '
+        'emotion-regulation strategies. Psychological Science, 30(6), '
+        '863–879.',
     doi: '10.1177/0956797619838763',
   ),
   Reference(
@@ -328,13 +399,6 @@ const references = <Reference>[
         'behavioral dysregulation in clinical and nonclinical samples: a '
         'meta-analysis. Emotion, 22(7), 1686–1697.',
     doi: '10.1037/emo0000968',
-  ),
-  Reference(
-    'demiralp2012',
-    'Demiralp, E. ir kt. (2012). Feeling blue or turquoise? Emotional '
-        'differentiation in major depressive disorder. Psychological Science, '
-        '23(11), 1410–1416.',
-    doi: '10.1177/0956797612444903',
   ),
   Reference(
     'starr2020',
@@ -362,14 +426,15 @@ const references = <Reference>[
   Reference(
     'seah2025',
     'Seah, T. H. S., Coifman, K. G. (2025). Effects of scaffolding emotion '
-        'language use on emotion differentiation and psychological health. '
-        'Cognition and Emotion, 39(7), 1719–1736.',
+        'language use on emotion differentiation and psychological health: an '
+        'experience-sampling study. Cognition and Emotion, 39(7), 1719–1736.',
     doi: '10.1080/02699931.2024.2382334',
   ),
   Reference(
     'hoemann2021',
     'Hoemann, K., Barrett, L. F., Quigley, K. S. (2021). Emotional '
-        'granularity increases with intensive ambulatory assessment. Frontiers '
+        'granularity increases with intensive ambulatory assessment: '
+        'methodological and individual factors influence how much. Frontiers '
         'in Psychology, 12, 704125.',
     doi: '10.3389/fpsyg.2021.704125',
   ),
@@ -404,7 +469,8 @@ const references = <Reference>[
     'bruno2024',
     'Bruno, L., Iborra Cuéllar, A., Pasikowski, S., Lindquist, K. A. '
         '(2024). EMOTONGUE, a smartphone application designed to promote '
-        'awareness and emotional self-regulation. Pulso, 47, 97–125.',
+        'awareness and consequent emotional self-regulation measure emotions '
+        'in natural contexts. Pulso, 47, 97–124.',
     doi: '10.58265/pulso.6633',
   ),
   Reference(
@@ -425,7 +491,7 @@ const references = <Reference>[
     'verduyn2015',
     'Verduyn, P., Lavrijsen, S. (2015). Which emotions last longest and '
         'why: the role of event importance and rumination. Motivation and '
-        'Emotion, 39, 119–127.',
+        'Emotion, 39(1), 119–127.',
     doi: '10.1007/s11031-014-9445-y',
   ),
   Reference(
@@ -468,7 +534,9 @@ const references = <Reference>[
   Reference(
     'posner2005',
     'Posner, J., Russell, J. A., Peterson, B. S. (2005). The circumplex '
-        'model of affect. Development and Psychopathology, 17(3), 715–734.',
+        'model of affect: an integrative approach to affective neuroscience, '
+        'cognitive development, and psychopathology. Development and '
+        'Psychopathology, 17(3), 715–734.',
     doi: '10.1017/S0954579405050340',
   ),
   Reference(
@@ -485,7 +553,8 @@ const references = <Reference>[
   ),
   Reference(
     'barrett2017',
-    'Barrett, L. F. (2017). The theory of constructed emotion. Social '
+    'Barrett, L. F. (2017). The theory of constructed emotion: an active '
+        'inference account of interoception and categorization. Social '
         'Cognitive and Affective Neuroscience, 12(1), 1–23.',
     doi: '10.1093/scan/nsw154',
   ),

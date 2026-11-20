@@ -48,7 +48,9 @@ moonlight white.
 
 Tiers: wheel core / Plutchik intense = strong, middle / basic = medium, outer / mild = soft.
 Dark tints keep each hue's angle and step down in OKLCH lightness (0.505 / 0.445 / 0.385) and
-chroma (72 / 56 / 42% of the light strong tint). Label colour = `ink` on every tint.
+chroma (72 / 56 / 42% of the light strong tint). Label colour = `ink` on every tint. The
+wheel is drawn once and kept, so it always takes the finished light or dark colours
+(`AppColors.settledOf`), never the blend the theme passes through while it switches.
 Measured: ink on any tint ≥ 4.7:1 (both themes); `test/theme/contrast_test.dart` enforces 4.5:1.
 
 ## Typography
@@ -60,7 +62,7 @@ Measured: ink on any tint ≥ 4.7:1 (both themes); `test/theme/contrast_test.dar
 | Body (reading page) | Nunito | 17 / 1.5 | 400 |
 | Label (buttons) | Nunito | 16 / 1.25 | 700 |
 | Small (hints, sources) | Nunito | 14 / 1.4 | 400 |
-| Wheel family names | Nunito | fitted, ≥ 1.3× the other words | 900 |
+| Wheel family names | Nunito | one fitted size, never broken, in the middle of the slice; ≈ 1.2× the other words | 900 |
 | Wheel middle/outer words | Nunito | one fitted size for both rings, always shown (pinch to read) | 800 |
 
 Nunito static instances (400–900) cut from the variable font and subset to Latin + Latin
@@ -72,8 +74,9 @@ system text size; the painted wheel does not (its core may grow up to 1.3×).
 
 ## Space, shape, size
 - Spacing scale (dp): 4, 8, 12, 16, 24, 32, 48.
-- Radius: chip = stadium, card 20, sheet 28, wheel segment corners ≤ 4, gap between segments
-  ≈ 0.8% of the radius (1.5–3 dp).
+- Radius: chip = stadium, card 20, sheet 28. Ring wheels (Jausmų ratas, Jausmų šeimos): words
+  parted by thin lines ≈ 0.4% of the radius (0.75–1.5 dp), segment corners 1 dp. Plutchik's
+  flower: gaps ≈ 0.8% of the radius (1.5–3 dp), corners 3 dp.
 - Touch targets ≥ 48 × 48 dp, ≥ 8 dp apart. The wheel fills the width (tablets too); sheets max
   640 dp wide.
 
@@ -89,8 +92,11 @@ or `accessibilityFeatures.reduceMotion` on iOS) → every duration is zero.
 ## Components (summary)
 | Component | Variants / states | Accessibility |
 |---|---|---|
-| Corner buttons | bottom right, for the right thumb: the flower (64 dp) opens the wheel drawer; "?" (56 dp) above it opens "Kaip naudotis"; "Atstatyti" (56 dp) appears left of "?" only while zoomed | tooltips "Keisti ratą", "Kaip naudotis", "Atstatyti" |
-| Heading | "Kaip dabar jautiesi?", the wheel's hint and the gear; fades away while the wheel is zoomed in | header; hidden from screen readers while faded |
+| Corner buttons | bottom right, for the right thumb: the flower (64 dp) opens the wheel drawer "Pasirink emocijų ratą"; "?" (56 dp) just left of it opens "Kaip naudotis"; "Atstatyti" (56 dp) appears above the flower only while zoomed | tooltips "Keisti ratą", "Kaip naudotis", "Atstatyti" |
+| Heading | "Kaip dabar jautiesi?", the wheel's hint (first opening, then every third) and the gear; fades away while the wheel is zoomed in | header; hidden from screen readers while faded |
+| Reading pages | "Kaip naudotis": how-to card, the "why" tile, help lines. "Kodėl emocijų ratas gali būti naudingas?": six numbered fold cards, then "Apie programėlę" and "Šaltiniai"; "Grįžti" at the bottom of both | page title is the first header |
+| Why tile | book icon, title, "Šeši trumpi skyreliai…", chevron; ink border 1.5 dp so it reads as a door | one button with title and lead |
+| Fold card | closed: number, title, first sentence (2 lines max, muted), chevron; open: the whole card at full width, then "Toliau: …" (or "Grįžti prie rato" after the last). One open at a time; an opened card scrolls its title to the top | one button "title. first sentence" with a folded / open hint |
 | Settings | gear icon top right of home; drawer with word form and colours (light, dark, like the phone) | tooltip "Nustatymai" |
 | Text button (ink) | idle, pressed, focus | ≥ 48 dp, label always visible |
 | Wheel | base + highlight overlay | one read-only semantic node per word, clockwise; Lithuanian locale |

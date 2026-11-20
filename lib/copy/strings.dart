@@ -16,7 +16,7 @@ abstract final class S {
   static const formFeminine = 'pavargusi';
 
   // Wheel menu
-  static const wheelMenuTitle = 'Kurį ratą naudoti?';
+  static const wheelMenuTitle = 'Pasirink emocijų ratą';
   static const wordFormTitle = 'Kaip apie save kalbi?';
   static const selectedWheel = 'Naudojamas dabar';
   static const themeTitle = 'Spalvos';
@@ -24,8 +24,16 @@ abstract final class S {
   static const themeDark = 'Tamsios';
   static const themeSystem = 'Kaip telefone';
 
-  // Reading page
+  // Reading pages
   static const sources = 'Šaltiniai';
+  static const sourcesLead = 'Kuo remiasi kiekviena šių puslapių mintis.';
+  static const whyTitle = 'Kodėl emocijų ratas gali būti naudingas?';
+  static const whyLead = 'Šeši trumpi skyreliai apie tai, ką rodo tyrimai.';
+  static const whyHowToRead = 'Skaityk iš eilės arba rinkis, kas įdomu.';
+  static const next = 'Toliau';
+  static const backToWheel = 'Grįžti prie rato';
+  static const readingNote =
+      'Tekstas paremtas tyrimais, bet nepakeičia specialisto pagalbos.';
   static const openSite = 'Atidaryti svetainę';
   static const linkFailed = 'Nepavyko atidaryti nuorodos:';
 }

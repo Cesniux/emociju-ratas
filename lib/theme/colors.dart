@@ -47,6 +47,12 @@ class AppColors extends ThemeExtension<AppColors> {
   static AppColors of(BuildContext context) =>
       Theme.of(context).extension<AppColors>()!;
 
+  /// The finished light or dark colours, never the blend the theme passes
+  /// through for a moment while it switches. For pictures that are drawn
+  /// once and kept, like the wheel: a blend would stay on them.
+  static AppColors settledOf(BuildContext context) =>
+      of(context).brightness == Brightness.dark ? dark : light;
+
   /// Every text-on-background pair the interface uses (contrast-tested).
   List<(String, Color, Color)> get textPairs => [
     ('ink on background', ink, background),

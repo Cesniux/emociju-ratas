@@ -2,6 +2,7 @@
 library;
 
 import 'package:emociju_ratas/state/settings_store.dart';
+import 'package:emociju_ratas/ui/how_to_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -28,6 +29,15 @@ void main() {
       await shot(tester, '10-home-$id');
     });
   }
+
+  testWidgets('home on an opening without the hint', (tester) async {
+    await pumpApp(
+      tester,
+      store: MemorySettingsStore(launchCount: 1),
+      pixelRatio: 2,
+    );
+    await shot(tester, '12-home-no-hint');
+  });
 
   testWidgets('home dark', (tester) async {
     await pumpApp(tester, brightness: Brightness.dark, pixelRatio: 2);
@@ -67,10 +77,25 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Kaip naudotis'));
     await shot(tester, '40-how-to-top');
-    await tester.drag(find.byType(ListView).last, const Offset(0, -700));
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -700));
     await shot(tester, '41-how-to-help');
-    await tester.drag(find.byType(ListView).last, const Offset(0, -9000));
-    await shot(tester, '42-how-to-sources');
+  });
+
+  testWidgets('why the wheel can help: the short tour', (tester) async {
+    await pumpApp(tester, pixelRatio: 2);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Kaip naudotis'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byType(WhyTile));
+    await tester.tap(find.byType(WhyTile));
+    await shot(tester, '44-why-top');
+    final next = find.textContaining('Toliau:').first;
+    await tester.ensureVisible(next);
+    await tester.pumpAndSettle();
+    await tester.tap(next);
+    await shot(tester, '45-why-next');
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -9000));
+    await shot(tester, '46-why-bottom');
   });
 
   testWidgets('tablet', (tester) async {

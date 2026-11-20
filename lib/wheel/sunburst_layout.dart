@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart' show StringCharacters;
 
 import '../data/models.dart';
 import '../theme/palette.dart';
@@ -43,16 +42,13 @@ class _Seg {
 /// word forms, so switching pavargęs / pavargusi never moves the rings) and
 /// the room it gets across the wheel.
 class _Fit {
-  _Fit(this.em, this.sweep, {this.leaf = false, this.splitEm});
+  _Fit(this.em, this.sweep, {this.leaf = false});
 
   final double em;
   final double sweep;
 
   /// A middle word with no words below it: it runs to the rim.
   final bool leaf;
-
-  /// Width of the wider half when the word is split in two lines.
-  final double? splitEm;
 }
 
 /// Hierarchical rings (Jausmų ratas, Jausmų šeimos).
@@ -62,6 +58,9 @@ class _Fit {
 /// as the words in it. All words, the family names too, run along the radius
 /// like in the Lithuanian picture the wheel comes from, and the ring widths
 /// are chosen for this screen so the words are as large as they can be.
+/// Family names are never broken in two: they share one size, small enough
+/// for the longest ("Pasibjaurėjimas") to sit whole in the middle of its
+/// slice.
 class SunburstLayout extends WheelLayout {
   SunburstLayout(
     this.model, {
@@ -95,21 +94,22 @@ class SunburstLayout extends WheelLayout {
   late final double outerFont;
 
   /// Family names are drawn at least this much larger than the other words.
-  static const double _coreLead = 1.3;
+  static const double _coreLead = 1.2;
 
   static const FontWeight coreWeight = FontWeight.w900;
   static const FontWeight wordWeight = FontWeight.w800;
-
-  /// Only long names (11+ letters, e.g. "Pasibjaurėjimas") may break.
-  (String, String)? _split(String name) =>
-      name.characters.length >= 11 ? splitSyllables(name) : null;
 
   /// Outer ring drawn as one band per middle word in thumbnails, where the
   /// words are not drawn: fewer lines, calmer.
   final List<(Path, int, double)> _outerBands = [];
 
+  /// Words are parted by a thin line, not a gap, so each word keeps the
+  /// room (owner's choice, 2026-11-20: like the Lithuanian picture).
   late final double _gap;
-  late final RadialFit _fit = RadialFit(across: _gap + 1.4);
+  late final RadialFit _fit = RadialFit(across: _gap + 0.6, pad: 2.5);
+
+  /// Corners stay just a little soft; round "pills" took room from words.
+  static const double _corner = 1;
 
   double _fitSize(double em, double sweep, double a, double b, int lines) =>
       _fit.size(em, sweep, a, b, lines);
@@ -117,8 +117,8 @@ class SunburstLayout extends WheelLayout {
   void _build(double coreScale) {
     final R = radius;
     final twoRings = model.depth >= 2;
-    _gap = (0.008 * R).clamp(1.5, 3.0);
-    const corner = 4.0;
+    _gap = (0.004 * R).clamp(0.75, 1.5);
+    const corner = _corner;
     final roots = model.roots;
     final n = roots.length;
 
@@ -151,22 +151,10 @@ class SunburstLayout extends WheelLayout {
       em(wheelWord(w.masculine), style),
       em(wheelWord(w.feminine), style),
     );
-    final coreFits = <_Fit>[];
-    for (var i = 0; i < n; i++) {
-      final w = roots[i].family.name;
-      final splits = [
-        for (final f in [w.masculine, w.feminine]) _split(wheelWord(f)),
-      ];
-      final splitEm = splits.every((s) => s != null)
-          ? [
-              for (final s in splits) ...[
-                em(s!.$1, coreStyle),
-                em(s.$2, coreStyle),
-              ],
-            ].reduce(math.max)
-          : null;
-      coreFits.add(_Fit(emBoth(w, coreStyle), sweeps[i], splitEm: splitEm));
-    }
+    final coreFits = [
+      for (var i = 0; i < n; i++)
+        _Fit(emBoth(roots[i].family.name, coreStyle), sweeps[i]),
+    ];
     final midFits = <_Fit>[];
     final outFits = <_Fit>[];
     for (final r in roots) {
@@ -185,14 +173,12 @@ class SunburstLayout extends WheelLayout {
     // --- ring widths: the split that gives the words the most room.
     final coreMax = 18 * coreScale;
     const wordMax = 15.0;
+    // One size for every family name, each on one line in the middle of
+    // its slice.
     double coreSize(double r0, double r1) {
       var size = coreMax;
       for (final f in coreFits) {
-        var best = _fitSize(f.em, f.sweep, r0, r1, 1);
-        if (f.splitEm != null) {
-          best = math.max(best, _fitSize(f.splitEm!, f.sweep, r0, r1, 2));
-        }
-        size = math.min(size, best);
+        size = math.min(size, _fit.centredSize(f.em, f.sweep, r0, r1));
       }
       return size;
     }
@@ -294,7 +280,7 @@ class SunburstLayout extends WheelLayout {
         );
         if (!leaf) {
           _outerBands.add((
-            sectorPath(center, stops[2], R, ma, ms, gap: _gap, corner: 3),
+            sectorPath(center, stops[2], R, ma, ms, gap: _gap, corner: _corner),
             i,
             3,
           ));
@@ -316,10 +302,10 @@ class SunburstLayout extends WheelLayout {
                   oa,
                   slot,
                   gap: _gap,
-                  corner: 3,
+                  corner: _corner,
                 ),
                 tier: Tier.soft,
-                corner: 3,
+                corner: _corner,
               ),
             );
             oa += slot;
@@ -349,39 +335,38 @@ class SunburstLayout extends WheelLayout {
     _layoutWords(_outer, outerFont);
   }
 
-  /// Words near 12 and 6 o'clock follow their family, so a family never
-  /// mixes both reading directions.
-  double _rotation(_Seg seg) {
-    final famMid = familyStart[seg.family] + familySweep[seg.family] / 2;
-    final near = math.sin(seg.mid).abs() < math.sin(deg(8));
-    return RadialFit.rotation(
-      seg.mid,
-      left: near ? math.sin(famMid) < 0 : null,
-    );
+  /// Which way a family's words read. Every word in a family, its name
+  /// included, reads the same way: outward when the family's middle is on
+  /// the right half, inward on the left. A family right at 12 or 6 o'clock
+  /// reads top to bottom.
+  bool _readsInward(int family) {
+    final mid = familyStart[family] + familySweep[family] / 2;
+    final s = math.sin(mid);
+    if (s.abs() > 1e-9) return s < 0;
+    return math.cos(mid) > 0;
   }
+
+  double _rotation(_Seg seg) =>
+      RadialFit.rotation(seg.mid, left: _readsInward(seg.family));
 
   void _layoutCore() {
     final style = wheelLabelStyle(colors.ink, coreFont, weight: coreWeight);
     for (final seg in _core) {
       final name = wheelWord(seg.feeling.word.of(form));
-      final oneEm = measure100(name, style).width / 100;
-      final split = _split(name);
-      final fitsOne =
-          _fitSize(oneEm, seg.sweep, seg.r0, seg.r1, 1) >= coreFont - 0.01;
-      final lines = fitsOne || split == null ? [name] : [split.$1, split.$2];
-      final lineEm = lines
-          .map((l) => measure100(l, style).width / 100)
-          .reduce(math.max);
-      final r = _fit.anchor(
-        lineEm,
-        coreFont,
-        seg.sweep,
-        seg.r0,
-        seg.r1,
-        lines.length,
+      final em = measure100(name, style).width / 100;
+      // Halfway along the slice; a word that would not fit there (never at
+      // the chosen size) moves out only as far as it must.
+      final length = em * coreFont;
+      final inner = math.max(
+        seg.r0 + _fit.pad,
+        (_fit.lineEm * coreFont + _fit.across) / seg.sweep,
+      );
+      final r = math.min(
+        math.max((seg.r0 + seg.r1) / 2, inner + length / 2),
+        seg.r1 - _fit.pad - length / 2,
       );
       seg.label = PlacedLabel(
-        lines: [for (final l in lines) layoutText(l, style)],
+        lines: [layoutText(name, style)],
         anchor: polar(center, seg.mid, r),
         rotation: _rotation(seg),
         fontSize: coreFont,
@@ -536,6 +521,19 @@ class SunburstLayout extends WheelLayout {
   /// Rotation of a radial label (tests: never upside down).
   double? labelRotationOf(String feelingId) =>
       _all.firstWhere((s) => s.feeling.id == feelingId).label?.rotation;
+
+  /// Lines a word is drawn on (tests: family names are never broken).
+  int? labelLinesOf(String feelingId) =>
+      _all.firstWhere((s) => s.feeling.id == feelingId).label?.lines.length;
+
+  /// How far along its ring a word's middle sits: 0 at the ring's inner
+  /// edge, 1 at the outer (tests: family names in the middle).
+  double? labelPlaceOf(String feelingId) {
+    final s = _all.firstWhere((s) => s.feeling.id == feelingId);
+    final label = s.label;
+    if (label == null) return null;
+    return ((label.anchor - center).distance - s.r0) / (s.r1 - s.r0);
+  }
 
   /// Smallest word in a ring (tests: nothing squeezed).
   double minFontOf(int ring) => _all

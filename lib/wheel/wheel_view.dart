@@ -194,7 +194,8 @@ class WheelViewState extends State<WheelView>
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppColors.of(context);
+    // Settled colours: the layout is kept, so a passing blend would stay.
+    final colors = AppColors.settledOf(context);
     final coreScale = MediaQuery.textScalerOf(
       context,
     ).clamp(minScaleFactor: 1, maxScaleFactor: 1.3).scale(1);
@@ -320,7 +321,7 @@ class _WheelThumbnailState extends State<WheelThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = AppColors.of(context);
+    final colors = AppColors.settledOf(context);
     final key = (widget.wheel.id, widget.size, colors.brightness);
     if (key != _key) {
       _layout?.dispose();

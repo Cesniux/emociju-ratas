@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart' show StringCharacters;
 
 import '../data/models.dart';
 import '../theme/palette.dart';
@@ -65,7 +64,9 @@ class PetalLayout extends WheelLayout {
   void _build() {
     final R = radius;
     // A wider centre: its words run along the radius, where they have room.
-    radii = [0.05 * R, 0.38 * R, 0.63 * R, 0.84 * R];
+    // Chosen so the longest words ("pasibjaurėjimas", "nuogąstavimas") fit
+    // whole at about the same size in every band.
+    radii = [0.05 * R, 0.40 * R, 0.64 * R, 0.84 * R];
     final gap = (0.008 * R).clamp(1.5, 3.0);
     final half = _petalSweep / 2;
 
@@ -118,8 +119,9 @@ class PetalLayout extends WheelLayout {
       );
     }
 
-    // Uniform font per level. The intense words in the narrow centre run
-    // along the radius; basic and mild words stay level, easiest to read.
+    // Uniform font per level, every word whole on one line. The intense
+    // words in the narrow centre run along the radius; basic and mild words
+    // stay level, easiest to read.
     final fit = RadialFit(across: gap + 1.4);
     double boxWidth(int level) => switch (level) {
       1 => 2 * ((radii[1] + radii[2]) / 2) * math.sin(half) * 0.86,
@@ -129,109 +131,60 @@ class PetalLayout extends WheelLayout {
       1 => (radii[2] - radii[1]) * 0.78,
       _ => (radii[3] - radii[2]) * 0.5,
     };
-    final perLevel = <int, (double, Map<int, List<String>>)>{};
+    final style100 = wheelLabelStyle(colors.ink, 100, weight: _weight);
+    final sizes = <int, double>{};
     for (final level in [0, 1, 2]) {
-      final style100 = wheelLabelStyle(colors.ink, 100, weight: _weight);
       var size = level == 1 ? 15.0 : 13.0;
-      final lines = <int, List<String>>{};
       for (final b in _bands.where((b) => b.level == level)) {
-        final text = wheelWord(b.feeling.word.of(form));
-        final m = measure100(text, style100);
-        // Only long words (11+ letters) may break across two lines.
-        final split = text.characters.length >= 11
-            ? splitSyllables(text)
-            : null;
-        final splitWidth = split == null
-            ? null
-            : math.max(
-                measure100(split.$1, style100).width,
-                measure100(split.$2, style100).width,
-              );
-        double one;
-        double? two;
-        if (level == 0) {
-          one = fit.size(m.width / 100, _petalSweep, radii[0], radii[1]);
-          if (splitWidth != null) {
-            two = fit.size(
-              splitWidth / 100,
-              _petalSweep,
-              radii[0],
-              radii[1],
-              2,
-            );
+        // Both word forms: switching pavargęs / pavargusi never resizes.
+        for (final each in WordForm.values) {
+          final m = measure100(wheelWord(b.feeling.word.of(each)), style100);
+          var best = level == 0
+              ? fit.centredSize(m.width / 100, _petalSweep, radii[0], radii[1])
+              : math.min(
+                      boxWidth(level) / m.width,
+                      boxHeight(level) / m.height,
+                    ) *
+                    100;
+          if (level == 2) {
+            // A side petal's word lies along the radius: it must fit between
+            // the basic word and the edge of the wheel.
+            final along = math.sin(b.petal * _petalSweep).abs();
+            if (along > 0.01) {
+              best = math.min(best, (R - radii[2] - 8) / along / m.width * 100);
+            }
           }
-        } else {
-          one =
-              math.min(boxWidth(level) / m.width, boxHeight(level) / m.height) *
-              100;
-          if (splitWidth != null) {
-            two =
-                math.min(
-                  boxWidth(level) / splitWidth,
-                  boxHeight(level) / (2 * m.height),
-                ) *
-                100;
-          }
+          size = math.min(size, best);
         }
-        var best = one;
-        var chosenLines = [text];
-        if (two != null && split != null && two > one * 1.12) {
-          best = two;
-          chosenLines = [split.$1, split.$2];
-        }
-        lines[b.petal] = chosenLines;
-        size = math.min(size, best);
       }
-      perLevel[level] = (math.max(size, 3), lines);
+      sizes[level] = math.max(size, 3);
     }
     for (final b in _bands) {
-      final (size, lines) = perLevel[b.level]!;
+      final size = sizes[b.level]!;
       final style = wheelLabelStyle(colors.ink, size, weight: _weight);
-      final style100 = style.copyWith(fontSize: 100);
       final text = wheelWord(b.feeling.word.of(form));
       final theta = b.petal * _petalSweep;
+      final painted = layoutText(text, style);
       if (b.level == 0) {
-        final em = measure100(text, style100).width / 100;
-        final fitsOne =
-            fit.size(em, _petalSweep, radii[0], radii[1]) >= size - 0.01;
-        final chosen = fitsOne ? [text] : lines[b.petal]!;
-        final lineEm = chosen
-            .map((l) => measure100(l, style100).width / 100)
-            .reduce(math.max);
-        final r = fit.anchor(
-          lineEm,
-          size,
-          _petalSweep,
-          radii[0],
-          radii[1],
-          chosen.length,
-        );
         b.label = PlacedLabel(
-          lines: [for (final l in chosen) layoutText(l, style)],
-          anchor: polar(center, theta, r),
+          lines: [painted],
+          anchor: polar(center, theta, (radii[0] + radii[1]) / 2),
           rotation: RadialFit.rotation(theta),
           fontSize: size,
           capCentered: true,
         );
         continue;
       }
-      final fitsOne =
-          measure100(text, style100).width * size / 100 <= boxWidth(b.level);
-      final painted = [
-        for (final l in (fitsOne ? [text] : lines[b.petal]!))
-          layoutText(l, style),
-      ];
       var anchor = b.anchor;
       if (b.level == 2) {
         // Side petals run sideways: slide the word out along the petal so
         // it never touches the basic word inside it.
-        final w = painted.fold<double>(0, (m, l) => math.max(m, l.width));
-        final needed = radii[2] + math.sin(theta).abs() * w / 2 + 4;
+        final needed = radii[2] + math.sin(theta).abs() * painted.width / 2 + 4;
         final at = (anchor - center).distance;
         if (needed > at) anchor = polar(center, theta, needed);
       }
       b.label = PlacedLabel(
-        lines: painted,
+        lines: [painted],
         anchor: anchor,
         rotation: 0,
         fontSize: size,
@@ -240,14 +193,14 @@ class PetalLayout extends WheelLayout {
     }
 
     // Dyads: small pills between the petal tips.
-    final style100 = wheelLabelStyle(colors.ink, 100, weight: _weight);
     var dyadSize = 11.0;
     for (final d in model.dyads) {
       final text = wheelWord(d.feeling.word.of(form));
       final m = measure100(text, style100);
       dyadSize = math.min(dyadSize, (side * 0.2) / m.width * 100);
     }
-    dyadSize = math.max(dyadSize, 3);
+    // Mixes never outshine the basic feelings they come from.
+    dyadSize = math.max(math.min(dyadSize, sizes[1]!), 3);
     final dyadStyle = wheelLabelStyle(colors.ink, dyadSize, weight: _weight);
     for (var k = 0; k < model.dyads.length; k++) {
       final d = model.dyads[k];
@@ -279,7 +232,7 @@ class PetalLayout extends WheelLayout {
         ),
       );
     }
-    fonts = [perLevel[0]!.$1, perLevel[1]!.$1, perLevel[2]!.$1, dyadSize];
+    fonts = [sizes[0]!, sizes[1]!, sizes[2]!, dyadSize];
   }
 
   Path _tipPath(double theta, double half, double gap) {
@@ -411,6 +364,17 @@ class PetalLayout extends WheelLayout {
   ];
 
   /// Test hooks.
+  int labelLinesOf(String feelingId) {
+    for (final b in _bands) {
+      if (b.feeling.id == feelingId) return b.label!.lines.length;
+    }
+    return _dyads
+        .firstWhere((d) => d.dyad.feeling.id == feelingId)
+        .label
+        .lines
+        .length;
+  }
+
   Offset anchorOf(String feelingId) {
     for (final b in _bands) {
       if (b.feeling.id == feelingId) return b.anchor;

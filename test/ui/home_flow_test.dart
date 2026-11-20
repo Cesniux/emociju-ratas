@@ -1,5 +1,8 @@
 import 'package:emociju_ratas/data/models.dart';
+import 'package:emociju_ratas/data/wheels.dart';
+import 'package:emociju_ratas/state/app_scope.dart';
 import 'package:emociju_ratas/state/settings_store.dart';
+import 'package:emociju_ratas/theme/colors.dart';
 import 'package:emociju_ratas/ui/home_screen.dart';
 import 'package:emociju_ratas/wheel/wheel_view.dart';
 import 'package:flutter/material.dart';
@@ -48,9 +51,8 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('the flower at the bottom right opens a drawer of wheels', (
-    tester,
-  ) async {
+  testWidgets('the flower at the bottom right opens a drawer of wheels; '
+      'help sits just left of it', (tester) async {
     final store = await pumpApp(tester);
     await tester.pumpAndSettle();
     final flower = find.byTooltip('Keisti ratą');
@@ -58,16 +60,14 @@ void main() {
     expect(tester.getCenter(flower).dx, greaterThan(330));
     expect(tester.getCenter(flower).dy, greaterThan(780));
     final help = tester.getRect(find.byTooltip('Kaip naudotis'));
-    expect(
-      help.bottom,
-      lessThan(tester.getRect(flower).top),
-      reason: '? above',
-    );
-    expect(help.center.dx, closeTo(tester.getCenter(flower).dx, 1));
+    final flowerRect = tester.getRect(flower);
+    expect(help.right, lessThan(flowerRect.left), reason: '? on the left');
+    expect(flowerRect.left - help.right, lessThan(20), reason: 'side by side');
+    expect(help.center.dy, closeTo(flowerRect.center.dy, 1));
     await tester.tap(flower);
     await tester.pumpAndSettle();
     expect(find.byType(BottomSheet), findsOneWidget);
-    expect(find.text('Kurį ratą naudoti?'), findsOneWidget);
+    expect(find.text('Pasirink emocijų ratą'), findsOneWidget);
     expect(find.text('Spalvos'), findsNothing, reason: 'lives in settings');
 
     await tester.tap(find.text('Plutchiko gėlė'));
@@ -101,8 +101,8 @@ void main() {
     );
   });
 
-  testWidgets('zoomed in: "Atstatyti" appears left of help and the question '
-      'steps aside', (tester) async {
+  testWidgets('zoomed in: "Atstatyti" appears above the flower and the '
+      'question steps aside', (tester) async {
     await pumpApp(tester);
     await tester.pumpAndSettle();
     expect(find.byTooltip('Atstatyti'), findsNothing);
@@ -118,9 +118,11 @@ void main() {
     expect(find.text('Atstatyti'), findsNothing, reason: 'no words');
     final help = tester.getRect(find.byTooltip('Kaip naudotis'));
     expect(help, helpBefore, reason: 'help stays put');
+    final flower = tester.getRect(find.byTooltip('Keisti ratą'));
     final reset = tester.getRect(button);
-    expect(reset.right, lessThan(help.left));
-    expect(reset.center.dy, closeTo(help.center.dy, 1));
+    expect(reset.bottom, lessThan(flower.top), reason: 'above the flower');
+    expect(flower.top - reset.bottom, lessThan(20), reason: 'right above');
+    expect(reset.center.dx, closeTo(flower.center.dx, 1));
     // The question, hint and settings fade away so the wheel can use the
     // whole screen.
     expect(find.byTooltip('Nustatymai').hitTestable(), findsNothing);
@@ -138,6 +140,57 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byTooltip('Atstatyti'), findsNothing);
     expect(find.byTooltip('Nustatymai').hitTestable(), findsOneWidget);
+  });
+
+  testWidgets('the hint shows on the first opening, then every third', (
+    tester,
+  ) async {
+    final hint = wheelById(defaultWheelId).hint;
+    for (final (before, shown) in [
+      (0, true),
+      (1, false),
+      (2, false),
+      (3, true),
+      (4, false),
+      (6, true),
+    ]) {
+      final store = await pumpApp(
+        tester,
+        store: MemorySettingsStore(launchCount: before),
+      );
+      await tester.pumpAndSettle();
+      expect(store.launchCount, before + 1, reason: 'this opening counted');
+      expect(
+        find.text(hint).hitTestable(),
+        shown ? findsOneWidget : findsNothing,
+        reason: 'opening ${before + 1}',
+      );
+      expect(find.text('Kaip dabar jautiesi?').hitTestable(), findsOneWidget);
+      // A fresh start for the next opening.
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
+  testWidgets('after switching light and dark the wheel words have the full '
+      'ink colour, not the blend the theme passes through', (tester) async {
+    await pumpApp(tester);
+    await tester.pumpAndSettle();
+    final settings = tester.widget<AppScope>(find.byType(AppScope)).settings;
+    Color ink() =>
+        tester.state<WheelViewState>(find.byType(WheelView)).layout!.colors.ink;
+    expect(ink(), AppColors.light.ink);
+
+    settings.setThemeMode(ThemeMode.dark);
+    // Frame by frame through the theme's cross-fade.
+    for (var i = 0; i < 20; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.pumpAndSettle();
+    expect(ink(), AppColors.dark.ink);
+
+    settings.setThemeMode(ThemeMode.light);
+    await tester.pumpAndSettle();
+    expect(ink(), AppColors.light.ink);
   });
 
   testWidgets('"Kaip naudotis" has no back arrow on top; "Grįžti" below', (

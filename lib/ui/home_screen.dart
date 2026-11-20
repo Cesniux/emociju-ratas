@@ -14,7 +14,7 @@ import 'settings_sheet.dart';
 import 'wheel_menu_sheet.dart';
 
 /// Home is the wheel, for looking. The question and the settings icon sit on
-/// top and step aside while the wheel is zoomed in; three round buttons wait
+/// top and step aside while the wheel is zoomed in; the round buttons wait
 /// at the bottom right, where a right thumb rests.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
             listenable: scope.settings,
             builder: (context, _) {
               final wheel = scope.settings.wheel;
+              final hint = scope.settings.showHint;
               final actions = _Actions(zoom: _zoom);
 
               return LayoutBuilder(
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              _Heading(wheel: wheel),
+                              _Heading(wheel: wheel, hint: hint),
                               const Spacer(),
                               Align(
                                 alignment: Alignment.bottomRight,
@@ -95,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               bottom: _Actions.height + Space.l,
                             ),
                             children: [
-                              _Heading(wheel: wheel),
+                              _Heading(wheel: wheel, hint: hint),
                               SizedBox(
                                 height: box.maxWidth.clamp(200.0, 420.0),
                                 child: WheelView(
@@ -120,7 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           wheel: wheel,
                           form: scope.settings.wordForm,
                           zoom: _zoom,
-                          coverTop: _Heading(wheel: wheel, ghost: true),
+                          coverTop: _Heading(
+                            wheel: wheel,
+                            hint: hint,
+                            ghost: true,
+                          ),
                           coverBottomRight: const Size(
                             _Actions.width,
                             _Actions.height,
@@ -133,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         right: 0,
                         child: _StepsAside(
                           zoom: _zoom,
-                          child: _Heading(wheel: wheel),
+                          child: _Heading(wheel: wheel, hint: hint),
                         ),
                       ),
                       Positioned(right: 0, bottom: 0, child: actions),
@@ -181,9 +186,13 @@ class _StepsAside extends StatelessWidget {
 
 /// "Kaip dabar jautiesi?", the wheel's hint and the settings icon.
 class _Heading extends StatelessWidget {
-  const _Heading({required this.wheel, this.ghost = false});
+  const _Heading({required this.wheel, required this.hint, this.ghost = false});
 
   final WheelModel wheel;
+
+  /// Whether the wheel's hint shows under the question (not every time the
+  /// app opens, see `AppSettings.showHint`).
+  final bool hint;
 
   /// A see-through stand-in that only takes the same room.
   final bool ghost;
@@ -206,11 +215,13 @@ class _Heading extends StatelessWidget {
                   header: true,
                   child: Text(S.prompt, style: text.headlineSmall),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  wheel.hint,
-                  style: text.bodyMedium?.copyWith(color: c.inkMuted),
-                ),
+                if (hint) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    wheel.hint,
+                    style: text.bodyMedium?.copyWith(color: c.inkMuted),
+                  ),
+                ],
               ],
             ),
           ),
@@ -229,8 +240,9 @@ class _Heading extends StatelessWidget {
   }
 }
 
-/// Bottom right, for the right thumb: the flower that changes the wheel,
-/// help above it, and "Atstatyti" to the left of help while zoomed in.
+/// Bottom right, for the right thumb: the flower that changes the wheel in
+/// the corner, help just left of it, and "Atstatyti" above the flower while
+/// the wheel is zoomed in.
 class _Actions extends StatelessWidget {
   const _Actions({required this.zoom});
 
@@ -241,9 +253,10 @@ class _Actions extends StatelessWidget {
   static const double _gap = Space.m;
   static const double _margin = Space.s;
 
-  /// Room the buttons take at full view (reset hidden).
-  static const double width = _flower + 2 * _margin;
-  static const double height = _flower + _gap + _button + 2 * _margin;
+  /// Room the buttons take at full view (reset hidden): help and the flower
+  /// side by side.
+  static const double width = _button + _gap + _flower + 2 * _margin;
+  static const double height = _flower + 2 * _margin;
 
   @override
   Widget build(BuildContext context) {
@@ -259,46 +272,43 @@ class _Actions extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          Padding(
+            // Centred over the flower.
+            padding: const EdgeInsets.only(right: (_flower - _button) / 2),
+            child: ResetZoomButton(zoom: zoom, size: _button),
+          ),
+          ListenableBuilder(
+            listenable: zoom,
+            builder: (context, _) => SizedBox(height: zoom.zoomed ? _gap : 0),
+          ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ResetZoomButton(zoom: zoom, size: _button),
-              ListenableBuilder(
-                listenable: zoom,
-                builder: (context, _) =>
-                    SizedBox(width: zoom.zoomed ? _gap : 0),
-              ),
-              Padding(
-                // Centred over the flower.
-                padding: const EdgeInsets.only(right: (_flower - _button) / 2),
-                child: IconButton.outlined(
-                  tooltip: S.howToUse,
-                  iconSize: 26,
-                  constraints: const BoxConstraints.tightFor(
-                    width: _button,
-                    height: _button,
-                  ),
-                  style: round,
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const HowToScreen(),
-                    ),
-                  ),
-                  icon: const Icon(Icons.question_mark_rounded),
+              IconButton.outlined(
+                tooltip: S.howToUse,
+                iconSize: 26,
+                constraints: const BoxConstraints.tightFor(
+                  width: _button,
+                  height: _button,
                 ),
+                style: round,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(builder: (_) => const HowToScreen()),
+                ),
+                icon: const Icon(Icons.question_mark_rounded),
+              ),
+              const SizedBox(width: _gap),
+              IconButton.outlined(
+                tooltip: S.changeWheel,
+                constraints: const BoxConstraints.tightFor(
+                  width: _flower,
+                  height: _flower,
+                ),
+                style: round,
+                onPressed: () => showWheelMenu(context),
+                icon: const FlowerIcon(size: 40),
               ),
             ],
-          ),
-          const SizedBox(height: _gap),
-          IconButton.outlined(
-            tooltip: S.changeWheel,
-            constraints: const BoxConstraints.tightFor(
-              width: _flower,
-              height: _flower,
-            ),
-            style: round,
-            onPressed: () => showWheelMenu(context),
-            icon: const FlowerIcon(size: 40),
           ),
         ],
       ),

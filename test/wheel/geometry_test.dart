@@ -4,10 +4,11 @@ import 'package:emociju_ratas/data/jausmu_ratas.dart';
 import 'package:emociju_ratas/data/models.dart';
 import 'package:emociju_ratas/theme/colors.dart';
 import 'package:emociju_ratas/wheel/geometry.dart';
-import 'package:emociju_ratas/wheel/labels.dart';
 import 'package:emociju_ratas/wheel/sunburst_layout.dart';
 import 'package:emociju_ratas/wheel/wheel_layout.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../helpers/wheel_checks.dart';
 
 void main() {
   test('polar and clockAngle agree: 0 at 12 o\'clock, clockwise', () {
@@ -23,11 +24,6 @@ void main() {
     for (var d = 0.0; d < 360; d += 7.5) {
       expect(clockAngle(c, polar(c, deg(d), 40)), closeTo(deg(d), 1e-9));
     }
-  });
-
-  test('Lithuanian syllable split keeps diphthongs whole', () {
-    expect(splitSyllables('Pasibjaurėjimas'), ('Pasibjau-', 'rėjimas'));
-    expect(splitSyllables('Baimė'), isNull);
   });
 
   for (final side in [320.0, 378.0, 560.0]) {
@@ -94,15 +90,15 @@ void main() {
         });
 
         test('one size for the middle and outer words, family names larger, '
-            'nothing squeezed, never upside down', () {
+            'nothing squeezed', () {
           expect(layout.middleFont, layout.outerFont);
           expect(
             layout.middleFont,
-            greaterThanOrEqualTo(side < 360 ? 4.8 : 6.0),
+            greaterThanOrEqualTo(side < 360 ? 4.3 : 5.3),
           );
           expect(
             layout.coreFont,
-            greaterThanOrEqualTo(layout.middleFont * 1.25),
+            greaterThanOrEqualTo(layout.middleFont * 1.15),
           );
           // Only the very longest words ("nemaloniai nustebęs") shrink, and
           // never below 60 % of the others.
@@ -113,16 +109,21 @@ void main() {
               reason: 'ring $ring',
             );
           }
-          for (final f in jausmuRatas.feelings) {
-            final rot = layout.labelRotationOf(f.id);
-            if (rot == null) continue;
-            // Near 12 and 6 o'clock text runs vertically; allow 8° of tilt.
-            expect(
-              math.cos(rot),
-              greaterThanOrEqualTo(-math.sin(deg(8)) - 1e-9),
-              reason: f.id,
-            );
+        });
+
+        test('family names are whole, one size, in the middle of their '
+            'slice', () {
+          for (final r in jausmuRatas.roots) {
+            final id = r.core.id;
+            expect(layout.labelLinesOf(id), 1, reason: id);
+            expect(layout.labelSizeOf(id), layout.coreFont, reason: id);
+            expect(layout.labelPlaceOf(id), closeTo(0.5, 1e-6), reason: id);
           }
+        });
+
+        test('every word of a family reads the same way, never upside '
+            'down', () {
+          expectOneWayPerFamily(layout, jausmuRatas);
         });
       });
     }
@@ -136,7 +137,7 @@ void main() {
       form: WordForm.feminine,
     );
     addTearDown(layout.dispose);
-    expect(layout.middleFont, greaterThanOrEqualTo(9));
-    expect(layout.coreFont, greaterThanOrEqualTo(11.5));
+    expect(layout.middleFont, greaterThanOrEqualTo(8.3));
+    expect(layout.coreFont, greaterThanOrEqualTo(10));
   });
 }

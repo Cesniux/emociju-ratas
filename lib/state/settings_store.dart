@@ -4,15 +4,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/models.dart';
 import '../data/wheels.dart';
 
-/// Persisted preferences: the last wheel, the word form and light or dark.
-/// Nothing else is stored, and nothing leaves the phone.
+/// Persisted preferences: the last wheel, the word form, light or dark, and
+/// how many times the app has been opened (for the hint on Home). Nothing
+/// else is stored, and nothing leaves the phone.
 abstract class SettingsStore {
   String? get wheelId;
   WordForm? get wordForm;
   ThemeMode? get themeMode;
+
+  /// Openings so far, 0 before the very first one.
+  int get launchCount;
   Future<void> setWheelId(String id);
   Future<void> setWordForm(WordForm form);
   Future<void> setThemeMode(ThemeMode mode);
+  Future<void> setLaunchCount(int count);
 }
 
 class PrefsSettingsStore implements SettingsStore {
@@ -23,6 +28,7 @@ class PrefsSettingsStore implements SettingsStore {
   static const _wheelKey = 'wheel_id';
   static const _formKey = 'word_form';
   static const _themeKey = 'theme_mode';
+  static const _launchKey = 'launch_count';
 
   /// v1.0.0 stored a picture index under this key.
   static const legacyKey = 'selectedImage';
@@ -71,7 +77,13 @@ class PrefsSettingsStore implements SettingsStore {
   };
 
   @override
+  int get launchCount => _prefs.getInt(_launchKey) ?? 0;
+
+  @override
   Future<void> setWheelId(String id) => _prefs.setString(_wheelKey, id);
+
+  @override
+  Future<void> setLaunchCount(int count) => _prefs.setInt(_launchKey, count);
 
   @override
   Future<void> setThemeMode(ThemeMode mode) =>
@@ -84,7 +96,12 @@ class PrefsSettingsStore implements SettingsStore {
 
 /// For tests and previews.
 class MemorySettingsStore implements SettingsStore {
-  MemorySettingsStore({this.wheelId, this.wordForm, this.themeMode});
+  MemorySettingsStore({
+    this.wheelId,
+    this.wordForm,
+    this.themeMode,
+    this.launchCount = 0,
+  });
 
   @override
   String? wheelId;
@@ -94,6 +111,12 @@ class MemorySettingsStore implements SettingsStore {
 
   @override
   ThemeMode? themeMode;
+
+  @override
+  int launchCount;
+
+  @override
+  Future<void> setLaunchCount(int count) async => launchCount = count;
 
   @override
   Future<void> setThemeMode(ThemeMode mode) async => themeMode = mode;
