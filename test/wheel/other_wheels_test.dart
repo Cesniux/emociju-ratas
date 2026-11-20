@@ -64,11 +64,25 @@ void main() {
         final hit = layout.hitTest(layout.centroidOf(f.id)) as SunburstHit?;
         expect(hit?.feelingId, f.id, reason: f.id);
       }
-      expect(layout.coreFont, greaterThanOrEqualTo(12));
+      // Equal slices for the outer words; a word with no words below it
+      // runs to the rim in one slice.
+      for (final r in jausmuSeimos.roots) {
+        for (final m in r.children) {
+          final k = m.children.isEmpty ? 1 : m.children.length;
+          expect(
+            layout.segmentOf(m.feeling.id).sweep,
+            closeTo(k * layout.slot, 1e-9),
+            reason: m.feeling.id,
+          );
+        }
+      }
+      expect(layout.middleFont, layout.outerFont);
+      expect(layout.middleFont, greaterThanOrEqualTo(side < 360 ? 4.8 : 6));
+      expect(layout.coreFont, greaterThanOrEqualTo(layout.middleFont * 1.25));
     });
   }
 
-  test('a tap on the energy circle offers the four nearest words', () {
+  test('a tap on an energy-circle word chooses that word', () {
     final layout = CircumplexLayout(
       energija,
       side: 378,
@@ -76,13 +90,10 @@ void main() {
       form: WordForm.masculine,
     );
     addTearDown(layout.dispose);
-    // Bottom-right: calm and pleasant.
-    final hit =
-        layout.hitTest(layout.center + const Offset(70, 70))! as CircumplexHit;
-    final near = energija.nearest(hit.valence, hit.arousal);
-    expect(
-      near.map((p) => p.feeling.familyId).toSet(),
-      contains('energija/mazai-energijos-malonu'),
-    );
+    final rects = layout.pillRects;
+    for (var i = 0; i < rects.length; i++) {
+      final hit = layout.hitTest(rects[i].center);
+      expect(hit?.feelingId, energija.points[i].feeling.id);
+    }
   });
 }

@@ -101,8 +101,9 @@ final PetalWheel plutchik = PetalWheel(
   id: 'plutchik',
   title: 'Plutchiko gėlė',
   byline: 'R. Plutchik, 1980',
-  whenToUse: 'Kai nori suprasti, kiek stiprus jausmas ir su kuo jis maišosi.',
-  hint: 'Paliesk žiedlapį. Vidurys stipresnis, kraštai švelnesni.',
+  whenToUse:
+      'Kai nori pažiūrėti, kiek stiprus jausmas ir su kuo jis susipynęs.',
+  hint: 'Arčiau vidurio jausmai stipresni, link kraštų švelnesni. Rask savąjį.',
   petals: [
     Petal(
       _joy,

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show ChangeNotifier, ThemeMode;
 
 import '../data/models.dart';
 import '../data/wheels.dart';
@@ -8,12 +8,24 @@ class AppSettings extends ChangeNotifier {
   AppSettings(this._store)
     : _wheelId = wheelById(_store.wheelId).id,
       _form = _store.wordForm ?? WordForm.masculine,
-      _formChosen = _store.wordForm != null;
+      _formChosen = _store.wordForm != null,
+      _themeMode = _store.themeMode ?? ThemeMode.system;
 
   final SettingsStore _store;
   String _wheelId;
   WordForm _form;
   bool _formChosen;
+  ThemeMode _themeMode;
+
+  /// Light, dark, or as the phone is set (the default).
+  ThemeMode get themeMode => _themeMode;
+
+  void setThemeMode(ThemeMode mode) {
+    if (mode == _themeMode) return;
+    _themeMode = mode;
+    _store.setThemeMode(mode);
+    notifyListeners();
+  }
 
   String get wheelId => _wheelId;
   WheelModel get wheel => wheelById(_wheelId);

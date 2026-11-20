@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import 'app.dart';
 import 'state/app_settings.dart';
-import 'state/selection.dart';
 import 'state/settings_store.dart';
 
 Future<void> main() async {
@@ -17,10 +16,7 @@ Future<void> main() async {
 Future<Widget> bootstrap({SettingsStore? store}) async {
   _registerFontLicences();
   final settingsStore = store ?? await PrefsSettingsStore.load();
-  return EmocijuRatasApp(
-    settings: AppSettings(settingsStore),
-    selection: Selection(),
-  );
+  return EmocijuRatasApp(settings: AppSettings(settingsStore));
 }
 
 bool _licencesRegistered = false;
@@ -29,11 +25,7 @@ void _registerFontLicences() {
   if (_licencesRegistered) return;
   _licencesRegistered = true;
   LicenseRegistry.addLicense(() async* {
-    const fonts = {
-      'Atkinson Hyperlegible Next':
-          'assets/fonts/AtkinsonHyperlegibleNext-OFL.txt',
-      'Lora': 'assets/fonts/Lora-OFL.txt',
-    };
+    const fonts = {'Nunito': 'assets/fonts/Nunito-OFL.txt'};
     for (final entry in fonts.entries) {
       yield LicenseEntryWithLineBreaks([
         entry.key,

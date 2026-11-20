@@ -17,9 +17,29 @@ class HowToScreen extends StatelessWidget {
     final c = AppColors.of(context);
     final text = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(title: const Text(S.howToUse)),
-      body: SafeArea(
+      // No back arrow up top: "Grįžti" waits at the bottom, under the thumb.
+      bottomNavigationBar: SafeArea(
         top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            Space.s,
+            Space.xs,
+            Space.s,
+            Space.s,
+          ),
+          child: OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size.fromHeight(60),
+              backgroundColor: c.surface,
+            ),
+            onPressed: () => Navigator.of(context).maybePop(),
+            icon: const Icon(Icons.arrow_back_rounded),
+            label: const Text(S.back),
+          ),
+        ),
+      ),
+      body: SafeArea(
+        bottom: false,
         child: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
@@ -27,11 +47,19 @@ class HowToScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(
                 Space.xl,
-                Space.s,
+                Space.l,
                 Space.xl,
-                Space.xxxl,
+                Space.xl,
               ),
               children: [
+                Semantics(
+                  header: true,
+                  child: Text(
+                    S.howToUse,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                const SizedBox(height: Space.l),
                 for (final card in guideCards) ...[
                   _Card(card: card),
                   const SizedBox(height: Space.l),
@@ -223,13 +251,10 @@ class _HelplineTile extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     return Semantics(
       button: true,
-      label: '${S.call}: ${line.name}, ${line.number}. ${line.note}',
+      link: true,
+      label: '${line.name}. ${line.note} ${S.openSite}.',
       excludeSemantics: true,
-      onTap: () => openLink(
-        context,
-        Uri(scheme: 'tel', path: line.dial),
-        shown: line.number,
-      ),
+      onTap: () => openLink(context, Uri.parse(line.url)),
       child: Material(
         color: c.surface,
         shape: RoundedRectangleBorder(
@@ -238,11 +263,7 @@ class _HelplineTile extends StatelessWidget {
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => openLink(
-            context,
-            Uri(scheme: 'tel', path: line.dial),
-            shown: line.number,
-          ),
+          onTap: () => openLink(context, Uri.parse(line.url)),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: Space.l,
@@ -254,15 +275,15 @@ class _HelplineTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(line.number, style: text.titleMedium),
+                      Text(line.name, style: text.titleMedium),
                       Text(
-                        '${line.name}. ${line.note}',
+                        line.note,
                         style: text.bodyMedium?.copyWith(color: c.inkMuted),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.call_rounded, color: c.ink),
+                Icon(Icons.open_in_new_rounded, color: c.ink),
               ],
             ),
           ),

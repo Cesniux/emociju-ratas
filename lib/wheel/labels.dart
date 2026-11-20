@@ -4,17 +4,19 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart' show StringCharacters;
 
 import '../theme/typography.dart';
-import 'geometry.dart';
 
 /// "liūdesys" → "Liūdesys".
 String sentenceCase(String text) => text.isEmpty
     ? text
     : text.characters.first.toUpperCase() + text.characters.skip(1).string;
 
+/// Words on the wheel are written in capitals: "liūdesys" → "LIŪDESYS".
+String wheelWord(String text) => text.toUpperCase();
+
 TextStyle wheelLabelStyle(
   Color color,
   double size, {
-  FontWeight weight = FontWeight.w500,
+  FontWeight weight = FontWeight.w700,
 }) => TextStyle(
   fontFamily: Fonts.body,
   fontSize: size,
@@ -119,6 +121,60 @@ const _onsets = {
   return ('${chars.take(at).join()}-', chars.skip(at).join());
 }
 
+/// Fitting a word along a radius, in a slice of the wheel: the sunburst
+/// rings and the centre of Plutchik's flower.
+class RadialFit {
+  const RadialFit({required this.across, this.pad = 3.5, this.lineEm = 1.1});
+
+  /// Room lost across a slice: the gap to the neighbour and a hairline (dp).
+  final double across;
+
+  /// Room kept free at each end of a word, along the radius (dp).
+  final double pad;
+
+  /// Height of a line of capitals with Lithuanian accents and ogoneks (em).
+  final double lineEm;
+
+  /// Largest font size (dp) for a word [em] wide placed along the radius
+  /// between [a] and [b] in a slice [sweep] wide. The word may slide outward
+  /// within the ring, where the slice is wider.
+  double size(double em, double sweep, double a, double b, [int lines = 1]) {
+    final room = b - a - 2 * pad;
+    if (room <= 0 || em <= 0) return 0;
+    final byLength = room / em;
+    // The inner end (b - pad - em·f) must leave room for the lines:
+    // (b - pad - em·f)·sweep - across >= lines·lineEm·f.
+    final byWidth =
+        ((b - pad) * sweep - across) / (lines * lineEm + em * sweep);
+    return math.max(0, math.min(byLength, byWidth));
+  }
+
+  /// Where the centre of a word [fontSize] large sits along the radius: in
+  /// the middle of the part of the ring where it fits.
+  double anchor(
+    double em,
+    double fontSize,
+    double sweep,
+    double a,
+    double b, [
+    int lines = 1,
+  ]) {
+    final length = em * fontSize;
+    final lo = math.max(a + pad, (lines * lineEm * fontSize + across) / sweep);
+    final hi = b - pad;
+    if (hi - lo < length) return hi - length / 2;
+    return (lo + hi) / 2;
+  }
+
+  /// Canvas rotation that keeps a word along the radius at clock angle
+  /// [theta] upright: on the right half it reads outward, on the left half
+  /// inward. [left] decides words that stand exactly at 12 or 6 o'clock.
+  static double rotation(double theta, {bool? left}) {
+    final isLeft = left ?? math.sin(theta) < 0;
+    return isLeft ? theta + math.pi / 2 : theta - math.pi / 2;
+  }
+}
+
 /// A horizontal or rotated label, one or two lines, laid out once.
 class PlacedLabel {
   PlacedLabel({
@@ -126,6 +182,7 @@ class PlacedLabel {
     required this.anchor,
     required this.rotation,
     required this.fontSize,
+    this.capCentered = false,
   });
 
   final List<TextPainter> lines;
@@ -135,6 +192,11 @@ class PlacedLabel {
   final double rotation;
   final double fontSize;
 
+  /// Centre the capital letters, not the line box, on [anchor]. Wheel words
+  /// are all capitals, and this keeps them exactly in the middle of their
+  /// slice.
+  final bool capCentered;
+
   double get width => lines.fold(0, (w, l) => math.max(w, l.width));
   double get height => lines.fold(0, (h, l) => h + l.height);
 
@@ -143,6 +205,17 @@ class PlacedLabel {
     canvas.translate(anchor.dx, anchor.dy);
     if (rotation != 0) canvas.rotate(rotation);
     var y = -height / 2;
+    if (capCentered && lines.isNotEmpty) {
+      // Average capital centre of all lines at y = 0.
+      final first = lines.first;
+      final baseline = first.computeDistanceToActualBaseline(
+        TextBaseline.alphabetic,
+      );
+      y =
+          Fonts.capHeight * fontSize / 2 -
+          baseline -
+          (lines.length - 1) * first.height / 2;
+    }
     for (final l in lines) {
       l.paint(canvas, Offset(-l.width / 2, y));
       y += l.height;
@@ -153,93 +226,6 @@ class PlacedLabel {
   void dispose() {
     for (final l in lines) {
       l.dispose();
-    }
-  }
-}
-
-/// Text that follows an arc, always reading left to right: on the top half
-/// glyph tops point outward, on the bottom half inward.
-class ArcLabel {
-  ArcLabel._(
-    this._glyphs,
-    this._advances,
-    this.lineRadii,
-    this.centerAngle,
-    this.bottom,
-    this.fontSize,
-  );
-
-  final List<List<TextPainter>> _glyphs;
-  final List<List<double>> _advances;
-  final List<double> lineRadii;
-  final double centerAngle;
-  final bool bottom;
-  final double fontSize;
-
-  /// Lays out [lines] (1 or 2) along a circle around the label's centre
-  /// radius [radius] at clock angle [angle].
-  factory ArcLabel.layout({
-    required List<String> lines,
-    required TextStyle style,
-    required double radius,
-    required double angle,
-  }) {
-    final a = normalize(angle);
-    final bottom = a > math.pi / 2 && a < 3 * math.pi / 2;
-    final glyphs = <List<TextPainter>>[];
-    final advances = <List<double>>[];
-    double lineHeight = 0;
-    for (final line in lines) {
-      final row = <TextPainter>[];
-      final adv = <double>[];
-      for (final ch in line.characters) {
-        final p = layoutText(ch, style);
-        row.add(p);
-        adv.add(p.width);
-        lineHeight = math.max(lineHeight, p.height);
-      }
-      glyphs.add(row);
-      advances.add(adv);
-    }
-    final n = lines.length;
-    // Line 1 sits visually above line 2: further out on the top half,
-    // further in on the bottom half.
-    final radii = <double>[
-      for (var i = 0; i < n; i++)
-        radius +
-            (bottom ? -1 : 1) *
-                (n == 1 ? 0 : (i == 0 ? 0.5 : -0.5) * lineHeight),
-    ];
-    return ArcLabel._(glyphs, advances, radii, a, bottom, style.fontSize ?? 14);
-  }
-
-  void paint(Canvas canvas, Offset center) {
-    for (var li = 0; li < _glyphs.length; li++) {
-      final r = lineRadii[li];
-      final total = _advances[li].fold<double>(0, (s, w) => s + w);
-      var run = -total / 2;
-      for (var gi = 0; gi < _glyphs[li].length; gi++) {
-        final g = _glyphs[li][gi];
-        final w = _advances[li][gi];
-        final s = run + w / 2;
-        run += w;
-        final delta = s / r;
-        final theta = bottom ? centerAngle - delta : centerAngle + delta;
-        final p = polar(center, theta, r);
-        canvas.save();
-        canvas.translate(p.dx, p.dy);
-        canvas.rotate(bottom ? theta + math.pi : theta);
-        g.paint(canvas, Offset(-w / 2, -g.height / 2));
-        canvas.restore();
-      }
-    }
-  }
-
-  void dispose() {
-    for (final row in _glyphs) {
-      for (final g in row) {
-        g.dispose();
-      }
     }
   }
 }

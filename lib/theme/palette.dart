@@ -21,7 +21,7 @@ final class HueTints {
   };
 }
 
-/// Calm feeling tints (design/SYSTEM.md). Ink on every tint is ≥ 5.4:1;
+/// Calm feeling tints (design/SYSTEM.md). Ink on every tint is ≥ 4.5:1;
 /// `test/theme/contrast_test.dart` guards it.
 abstract final class Palette {
   static const Map<FamilyHue, HueTints> light = {
@@ -77,56 +77,58 @@ abstract final class Palette {
     ),
   };
 
+  /// Dusk versions of the same hues (same hue angle, lower lightness and
+  /// chroma in OKLCH), so the wheel rests softly on the evening blue.
   static const Map<FamilyHue, HueTints> dark = {
     FamilyHue.yellow: HueTints(
-      Color(0xFF6E5A1E),
-      Color(0xFF574A22),
-      Color(0xFF3F3824),
+      Color(0xFF79621A),
+      Color(0xFF635220),
+      Color(0xFF4F4320),
     ),
     FamilyHue.olive: HueTints(
-      Color(0xFF5A5E26),
-      Color(0xFF484B26),
-      Color(0xFF363824),
+      Color(0xFF666933),
+      Color(0xFF55572F),
+      Color(0xFF44462A),
     ),
     FamilyHue.blue: HueTints(
-      Color(0xFF3D5680),
-      Color(0xFF334563),
-      Color(0xFF2A3447),
+      Color(0xFF55667F),
+      Color(0xFF485568),
+      Color(0xFF3B4452),
     ),
     FamilyHue.mauve: HueTints(
-      Color(0xFF5E4775),
-      Color(0xFF4A3B5B),
-      Color(0xFF382F42),
+      Color(0xFF6D5D7A),
+      Color(0xFF5A4E64),
+      Color(0xFF48404F),
     ),
     FamilyHue.clay: HueTints(
-      Color(0xFF7E3F31),
-      Color(0xFF613A31),
-      Color(0xFF46302B),
+      Color(0xFF895547),
+      Color(0xFF70483E),
+      Color(0xFF583C34),
     ),
     FamilyHue.orange: HueTints(
-      Color(0xFF7A4A1F),
-      Color(0xFF5F4026),
-      Color(0xFF453326),
+      Color(0xFF845A31),
+      Color(0xFF6C4C2E),
+      Color(0xFF553E29),
     ),
     FamilyHue.sage: HueTints(
-      Color(0xFF4B6634),
-      Color(0xFF3E5230),
-      Color(0xFF313D29),
+      Color(0xFF596C45),
+      Color(0xFF4B5A3C),
+      Color(0xFF3D4833),
     ),
     FamilyHue.green: HueTints(
-      Color(0xFF2F6149),
-      Color(0xFF2B4E3D),
-      Color(0xFF253C31),
+      Color(0xFF4A6E5C),
+      Color(0xFF405B4D),
+      Color(0xFF36493F),
     ),
     FamilyHue.sky: HueTints(
-      Color(0xFF2F5F6E),
-      Color(0xFF2B4D58),
-      Color(0xFF253B43),
+      Color(0xFF476B75),
+      Color(0xFF3E5960),
+      Color(0xFF34474D),
     ),
     FamilyHue.rose: HueTints(
-      Color(0xFF7A3D4C),
-      Color(0xFF5F3540),
-      Color(0xFF452B32),
+      Color(0xFF825760),
+      Color(0xFF6A4951),
+      Color(0xFF543C41),
     ),
   };
 

@@ -17,8 +17,9 @@ final SunburstWheel jausmuSeimos = buildSunburst(
   id: 'jausmu-seimos',
   title: 'Jausmų šeimos',
   byline: 'P. Shaver ir kt., 1987; W. G. Parrott, 2001',
-  whenToUse: 'Su meile: kaip žmonės patys grupuoja jausmų žodžius.',
-  hint: 'Paliesk šeimą, kuri arčiausiai to, ką jauti.',
+  whenToUse:
+      'Ratas, kuriame yra ir meilė. Žodžius į šeimas sudėjo patys žmonės.',
+  hint: 'Jausmai gyvena šeimomis. Rask žodį, kuris šiandien tavo.',
   src: 'vppc',
   families: [
     F(

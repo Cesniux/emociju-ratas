@@ -83,7 +83,7 @@ class CircumplexLayout extends WheelLayout {
     final centres = <Offset>[];
     final sizes = <Size>[];
     for (final p in model.points) {
-      final label = layoutText(p.feeling.word.of(form), style);
+      final label = layoutText(wheelWord(p.feeling.word.of(form)), style);
       labels.add(label);
       sizes.add(Size(label.width + 18, label.height + 10));
       centres.add(polar(center, deg(p.clockDeg), p.radius * R * 0.9));
@@ -226,80 +226,54 @@ class CircumplexLayout extends WheelLayout {
   }
 
   @override
-  void paintHighlights(
-    Canvas canvas, {
-    required Set<String> chosen,
-    required double zoomStep,
-    String? hoverFamilyId,
-    Offset? probe,
-  }) {
-    if (probe != null) {
-      canvas.drawCircle(
-        probe,
-        14,
-        Paint()..color = colors.ink.withValues(alpha: 0.12),
-      );
-      canvas.drawCircle(
-        probe,
-        9,
-        Paint()
-          ..color = colors.ink
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2,
-      );
-      canvas.drawCircle(probe, 3.5, Paint()..color = colors.ink);
-    }
-    for (final p in _pills) {
-      if (!chosen.contains(p.placed.feeling.key)) continue;
-      canvas.drawRRect(
-        p.rect,
-        Paint()..color = _quadrantTint(p.quadrant, Tier.strong),
-      );
-      canvas.drawRRect(
-        p.rect,
-        Paint()
-          ..color = colors.ink
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2,
-      );
-      p.label.paint(canvas);
-    }
-  }
-
-  @override
   WheelHit? hitTest(Offset p) {
     final d = p - center;
     if (d.distance > radius + 6) return null;
+    // The word under the finger; a near miss counts (48 dp target).
+    _Pill? best;
+    var bestDistance = double.infinity;
+    for (final pill in _pills) {
+      final r = pill.rect.outerRect;
+      final target = r.inflate(math.max(0, (48 - r.height) / 2));
+      if (!target.contains(p)) continue;
+      final distance = (r.center - p).distance;
+      if (distance < bestDistance) {
+        best = pill;
+        bestDistance = distance;
+      }
+    }
+    if (best == null) return null;
     final v = (d.dx / radius).clamp(-1.0, 1.0);
     final a = (-d.dy / radius).clamp(-1.0, 1.0);
-    final q = model.quadrantAt(v, a);
     return CircumplexHit(
-      model.quadrants[q].id,
+      model.quadrants[best.quadrant].id,
       valence: v,
       arousal: a,
       position: p,
+      feelingId: best.placed.feeling.id,
     );
   }
 
   @override
   late final List<SemanticTarget> semanticTargets = [
-    for (var q = 0; q < 4; q++)
-      () {
-        final theta = deg(45 + q * 90);
-        final point = polar(center, theta, radius * 0.55);
-        return SemanticTarget(
-          rect: Rect.fromCenter(center: point, width: 64, height: 64),
-          label: sentenceCase(model.quadrants[q].name.of(form)),
-          familyId: model.quadrants[q].id,
-          hit: CircumplexHit(
-            model.quadrants[q].id,
-            valence: (point.dx - center.dx) / radius,
-            arousal: (center.dy - point.dy) / radius,
-            position: point,
-          ),
-          order: q,
-        );
-      }(),
+    for (var i = 0; i < _pills.length; i++)
+      SemanticTarget(
+        rect: Rect.fromCenter(
+          center: _pills[i].rect.center,
+          width: math.max(48, _pills[i].rect.width),
+          height: 48,
+        ),
+        label: sentenceCase(_pills[i].placed.feeling.word.of(form)),
+        familyId: model.quadrants[_pills[i].quadrant].id,
+        hit: CircumplexHit(
+          model.quadrants[_pills[i].quadrant].id,
+          valence: _pills[i].placed.valence,
+          arousal: _pills[i].placed.arousal,
+          position: _pills[i].rect.center,
+          feelingId: _pills[i].placed.feeling.id,
+        ),
+        order: i,
+      ),
   ];
 
   /// Test hooks.

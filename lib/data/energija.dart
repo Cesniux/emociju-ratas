@@ -83,8 +83,9 @@ final CircumplexWheel energija = CircumplexWheel(
   id: 'energija',
   title: 'Energija ir malonumas',
   byline: 'J. Russell, 1980',
-  whenToUse: 'Kai žodžio dar nėra: pradėk nuo kūno.',
-  hint: 'Paliesk vietą: kiek turi energijos ir kiek tau malonu.',
+  whenToUse: 'Kai žodžio dar nėra. Pradėk nuo to, ką jauti kūne.',
+  hint:
+      'Paklausk kūno, kiek jame jėgų. Aukščiau daugiau energijos, dešiniau maloniau.',
   quadrants: _quadrants,
   points: [
     _p('atidus', 'atidi', 'alert', 8, 0.60),

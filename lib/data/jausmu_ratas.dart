@@ -29,8 +29,9 @@ final SunburstWheel jausmuRatas = buildSunburst(
   id: 'jausmu-ratas',
   title: 'Jausmų ratas',
   byline: 'Pokalbių gidas, pagal G. Roberts ir G. Willcox',
-  whenToUse: 'Kasdien: nuo bendro jausmo iki tikslaus žodžio.',
-  hint: 'Paliesk spalvą, kuri arčiausiai to, ką jauti.',
+  whenToUse: 'Kasdienai. Nuo bendro jausmo pamažu iki tikslaus žodžio.',
+  hint:
+      'Neskubėk. Teisingo atsakymo nėra, ieškok žodžio, kuris šiandien tinka.',
   src: 'pokalbiu-gidas',
   families: [
     F(

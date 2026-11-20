@@ -6,43 +6,27 @@ abstract final class S {
   // Home
   static const prompt = 'Kaip dabar jautiesi?';
   static const howToUse = 'Kaip naudotis';
-  static const wheelPillHint = 'Pakeisti ratą';
+  static const changeWheel = 'Keisti ratą';
+  static const settings = 'Nustatymai';
+  static const back = 'Grįžti';
   static const resetZoom = 'Atstatyti';
-  static const familyHint = 'Atveria šios šeimos žodžius';
-  static String chosenValue(int n) => 'Pasirinkta: $n';
 
-  // Tray
-  static const trayEmpty = 'Čia atsiras žodžiai, kuriuos pasirinksi.';
-  static const trayTitle = 'Tavo žodžiai';
-  static const clear = 'Išvalyti';
-  static const cleared = 'Žodžiai išvalyti.';
-  static const undo = 'Atšaukti';
-  static String remove(String word) => 'Pašalinti „$word“';
-
-  // Sheet
-  static const close = 'Uždaryti';
-  static const formQuestion = 'Kaip tau patogiau?';
+  // Word form
   static const formMasculine = 'pavargęs';
   static const formFeminine = 'pavargusi';
-  static const chosen = 'pasirinkta';
-  static const generalFeeling = 'Bendras jausmas';
-  static const plutchikLadder = 'Nuo silpno iki stipraus';
-  static const plutchikMixes = 'Mišiniai su kaimynais';
-  static const plutchikOpposite = 'Priešingybė';
-  static const showOpposite = 'Rodyti priešingą jausmą';
-  static const nearYourPoint = 'Arti tavo taško';
-  static const nearYourPointHint =
-      'Pasirink žodį, kuris tinka. Gali paliesti ratą dar kartą kitoje vietoje.';
 
   // Wheel menu
   static const wheelMenuTitle = 'Kurį ratą naudoti?';
   static const wordFormTitle = 'Kaip apie save kalbi?';
   static const selectedWheel = 'Naudojamas dabar';
+  static const themeTitle = 'Spalvos';
+  static const themeLight = 'Šviesios';
+  static const themeDark = 'Tamsios';
+  static const themeSystem = 'Kaip telefone';
 
   // Reading page
   static const sources = 'Šaltiniai';
-  static const call = 'Skambinti';
-  static const callFailed = 'Nepavyko atidaryti skambinimo. Numeris:';
+  static const openSite = 'Atidaryti svetainę';
   static const linkFailed = 'Nepavyko atidaryti nuorodos:';
 }
 

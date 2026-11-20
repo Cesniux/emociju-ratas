@@ -78,25 +78,52 @@ void main() {
           expect(layout.outerCount, 82);
         });
 
-        test(
-          'core names are readable at 1×; radial words never upside down',
-          () {
-            expect(
-              layout.coreFont,
-              greaterThanOrEqualTo(side < 360 ? 12 : LabelMin.core),
-            );
-            for (final f in jausmuRatas.feelings) {
-              final rot = layout.labelRotationOf(f.id);
-              if (rot == null) continue;
-              // Near 12 and 6 o'clock text runs vertically; allow 8° of tilt.
-              expect(
-                math.cos(rot),
-                greaterThanOrEqualTo(-math.sin(deg(8)) - 1e-9),
-                reason: f.id,
-              );
+        test('every outer word gets the same slice; families follow '
+            'their words', () {
+          for (final f in jausmuRatas.feelings) {
+            final depth = f.id.split('/').length - 2;
+            final seg = layout.segmentOf(f.id);
+            if (depth == 2) {
+              expect(seg.sweep, closeTo(layout.slot, 1e-9), reason: f.id);
+            } else if (depth == 1) {
+              // Every middle word holds exactly two outer words.
+              expect(seg.sweep, closeTo(2 * layout.slot, 1e-9), reason: f.id);
             }
-          },
-        );
+          }
+          expect(layout.slot, closeTo(tau / 82, 1e-9));
+        });
+
+        test('one size for the middle and outer words, family names larger, '
+            'nothing squeezed, never upside down', () {
+          expect(layout.middleFont, layout.outerFont);
+          expect(
+            layout.middleFont,
+            greaterThanOrEqualTo(side < 360 ? 4.8 : 6.0),
+          );
+          expect(
+            layout.coreFont,
+            greaterThanOrEqualTo(layout.middleFont * 1.25),
+          );
+          // Only the very longest words ("nemaloniai nustebęs") shrink, and
+          // never below 60 % of the others.
+          for (final ring in [1, 2]) {
+            expect(
+              layout.minFontOf(ring),
+              greaterThanOrEqualTo(layout.middleFont * 0.6),
+              reason: 'ring $ring',
+            );
+          }
+          for (final f in jausmuRatas.feelings) {
+            final rot = layout.labelRotationOf(f.id);
+            if (rot == null) continue;
+            // Near 12 and 6 o'clock text runs vertically; allow 8° of tilt.
+            expect(
+              math.cos(rot),
+              greaterThanOrEqualTo(-math.sin(deg(8)) - 1e-9),
+              reason: f.id,
+            );
+          }
+        });
       });
     }
   }
@@ -109,15 +136,7 @@ void main() {
       form: WordForm.feminine,
     );
     addTearDown(layout.dispose);
-    expect(
-      LabelMin.visible(layout.middleFont, LabelMin.word, 1),
-      isTrue,
-      reason: 'middle ${layout.middleFont}',
-    );
-    expect(
-      LabelMin.visible(layout.outerFont, LabelMin.word, 1.5),
-      isTrue,
-      reason: 'outer ${layout.outerFont}',
-    );
+    expect(layout.middleFont, greaterThanOrEqualTo(9));
+    expect(layout.coreFont, greaterThanOrEqualTo(11.5));
   });
 }

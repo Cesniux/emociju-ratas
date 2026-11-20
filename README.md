@@ -1,8 +1,9 @@
 # Emocijų ratas
 
 A calm Lithuanian emotion-wheel app (Flutter). Open it and the wheel you used last is already
-there: tap the colour closest to what you feel, then choose the exact word. Several words may be
-chosen. Nothing leaves the phone.
+there: start from the colour closest to what you feel and move outward to the exact word; pinch
+to read the small words. Every word on the wheel gets the same slice, in Nunito capitals.
+Nothing leaves the phone.
 
 ## The four wheels
 

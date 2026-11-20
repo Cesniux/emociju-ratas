@@ -14,35 +14,31 @@ Future<void> showWheelMenu(BuildContext context) {
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    showDragHandle: true,
     sheetAnimationStyle: Motion.of(context).sheet,
     builder: (_) => const WheelMenuSheet(),
   );
 }
 
-/// Choose a wheel and the word form. Both are remembered.
+/// A drawer from the bottom for choosing a wheel. The choice is remembered.
 class WheelMenuSheet extends StatelessWidget {
   const WheelMenuSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     final settings = AppScope.of(context).settings;
-    final c = AppColors.of(context);
     final text = Theme.of(context).textTheme;
     return ListenableBuilder(
       listenable: settings,
-      builder: (context, _) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.75,
-        minChildSize: 0.4,
-        maxChildSize: 0.94,
-        builder: (context, controller) => ListView(
-          controller: controller,
-          padding: EdgeInsets.fromLTRB(
-            Space.xl,
-            0,
-            Space.xl,
-            Space.xxl + MediaQuery.paddingOf(context).bottom,
-          ),
+      builder: (context, _) => SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(
+          Space.l,
+          0,
+          Space.l,
+          Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Semantics(
               header: true,
@@ -58,28 +54,8 @@ class WheelMenuSheet extends StatelessWidget {
                   Navigator.of(context).maybePop();
                 },
               ),
-              const SizedBox(height: Space.m),
+              const SizedBox(height: Space.s),
             ],
-            const SizedBox(height: Space.s),
-            Divider(color: c.outline),
-            const SizedBox(height: Space.l),
-            Text(S.wordFormTitle, style: text.titleSmall),
-            const SizedBox(height: Space.s),
-            SegmentedButton<WordForm>(
-              showSelectedIcon: false,
-              segments: const [
-                ButtonSegment(
-                  value: WordForm.masculine,
-                  label: Text(S.formMasculine),
-                ),
-                ButtonSegment(
-                  value: WordForm.feminine,
-                  label: Text(S.formFeminine),
-                ),
-              ],
-              selected: {settings.wordForm},
-              onSelectionChanged: (s) => settings.setWordForm(s.first),
-            ),
           ],
         ),
       ),

@@ -32,14 +32,16 @@ class AppColors extends ThemeExtension<AppColors> {
     outline: Color(0xFFDDD3C7),
   );
 
+  /// Evening blue, like the sky a while after sunset: dark enough to rest
+  /// the eyes, never black. Ink is a soft moonlight white, not pure white.
   static const dark = AppColors(
     brightness: Brightness.dark,
-    background: Color(0xFF1C1A17),
-    surface: Color(0xFF262320),
-    sunken: Color(0xFF302C28),
-    ink: Color(0xFFF1EBE3),
-    inkMuted: Color(0xFFC4BAAE),
-    outline: Color(0xFF3E3934),
+    background: Color(0xFF202A3D),
+    surface: Color(0xFF293449),
+    sunken: Color(0xFF333F54),
+    ink: Color(0xFFECE9E2),
+    inkMuted: Color(0xFFB7BECA),
+    outline: Color(0xFF485469),
   );
 
   static AppColors of(BuildContext context) =>

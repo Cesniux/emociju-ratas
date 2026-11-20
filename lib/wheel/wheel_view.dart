@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../copy/strings.dart';
 import '../data/models.dart';
-import '../state/selection.dart';
 import '../theme/colors.dart';
 import '../theme/motion.dart';
 import '../theme/tokens.dart';
@@ -12,26 +11,98 @@ import 'wheel_layout.dart';
 import 'wheel_painters.dart';
 import 'wheel_targets.dart';
 
-/// The interactive wheel: tap to open a family, pinch to see more words.
+/// Zoom state shared between the wheel and the "Atstatyti" button, which
+/// lives low on the screen next to the other buttons.
+class WheelZoom extends ChangeNotifier {
+  bool _zoomed = false;
+  VoidCallback? _reset;
+
+  bool get zoomed => _zoomed;
+
+  void _set(bool value) {
+    if (value == _zoomed) return;
+    _zoomed = value;
+    notifyListeners();
+  }
+
+  /// Animates the wheel back to its full view.
+  void reset() => _reset?.call();
+}
+
+/// "Atstatyti": a round icon that shows only while the wheel is zoomed in.
+/// The word lives in the tooltip and for screen readers.
+class ResetZoomButton extends StatelessWidget {
+  const ResetZoomButton({super.key, required this.zoom, this.size = 56});
+
+  final WheelZoom zoom;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppColors.of(context);
+    final motion = Motion.of(context);
+    return ListenableBuilder(
+      listenable: zoom,
+      builder: (context, _) => AnimatedSwitcher(
+        duration: motion.short,
+        switchInCurve: Motion.ease,
+        switchOutCurve: Motion.ease,
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: Tween(begin: 0.85, end: 1.0).animate(animation),
+            child: child,
+          ),
+        ),
+        child: !zoom.zoomed
+            ? const SizedBox.shrink()
+            : IconButton.outlined(
+                key: const ValueKey('reset'),
+                tooltip: S.resetZoom,
+                iconSize: 26,
+                constraints: BoxConstraints.tightFor(width: size, height: size),
+                style: IconButton.styleFrom(
+                  backgroundColor: colors.surface,
+                  foregroundColor: colors.ink,
+                  side: BorderSide(color: colors.outline),
+                ),
+                onPressed: zoom.reset,
+                icon: const Icon(Icons.zoom_out_map_rounded),
+              ),
+      ),
+    );
+  }
+}
+
+/// The wheel, for looking: pinch to read small words, drag to move around.
+/// The zoom area fills all the space it gets, so a zoomed wheel can use the
+/// height of a tall phone, not only a square.
 class WheelView extends StatefulWidget {
   const WheelView({
     super.key,
     required this.wheel,
     required this.form,
-    required this.selection,
-    this.onHit,
     this.maxSide = Sizes.wheelMax,
-    this.alignment = Alignment.center,
+    this.zoom,
+    this.coverTop,
+    this.coverBottomRight = Size.zero,
   });
 
   final WheelModel wheel;
   final WordForm form;
-  final Selection selection;
-  final ValueChanged<WheelHit>? onHit;
   final double maxSide;
 
-  /// Where the wheel sits when the space is taller than it is wide.
-  final Alignment alignment;
+  /// A see-through copy of what lies over the top of the wheel's area at
+  /// full view (the question and hint). It takes the same room, so the whole
+  /// wheel starts below it, while a zoomed wheel can use the full height.
+  final Widget? coverTop;
+
+  /// Buttons over the bottom right corner: the full wheel moves up so it
+  /// never runs under them.
+  final Size coverBottomRight;
+
+  /// Reports zoom and accepts "Atstatyti" from outside.
+  final WheelZoom? zoom;
 
   @override
   State<WheelView> createState() => WheelViewState();
@@ -46,11 +117,6 @@ class WheelViewState extends State<WheelView>
   );
   Animation<Matrix4>? _resetAnimation;
 
-  double _zoomStep = 1;
-  bool _zoomed = false;
-  String? _hover;
-  Offset? _probe;
-
   WheelLayout? _layout;
   Object? _layoutKey;
 
@@ -61,6 +127,7 @@ class WheelViewState extends State<WheelView>
   @override
   void initState() {
     super.initState();
+    widget.zoom?._reset = _resetZoom;
     _controller.addListener(_onTransform);
     _reset.addListener(() {
       final a = _resetAnimation;
@@ -73,13 +140,12 @@ class WheelViewState extends State<WheelView>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.wheel.id != widget.wheel.id) {
       _controller.value = Matrix4.identity();
-      _probe = null;
-      _hover = null;
     }
   }
 
   @override
   void dispose() {
+    if (widget.zoom?._reset == _resetZoom) widget.zoom?._reset = null;
     _controller.dispose();
     _reset.dispose();
     _layout?.dispose();
@@ -87,21 +153,7 @@ class WheelViewState extends State<WheelView>
   }
 
   void _onTransform() {
-    final scale = _controller.value.getMaxScaleOnAxis();
-    final step = scale >= 2.6
-        ? 3.0
-        : scale >= 1.8
-        ? 2.0
-        : scale >= 1.3
-        ? 1.5
-        : 1.0;
-    final zoomed = scale > 1.02;
-    if (step != _zoomStep || zoomed != _zoomed) {
-      setState(() {
-        _zoomStep = step;
-        _zoomed = zoomed;
-      });
-    }
+    widget.zoom?._set(_controller.value.getMaxScaleOnAxis() > 1.02);
   }
 
   void _resetZoom() {
@@ -136,14 +188,8 @@ class WheelViewState extends State<WheelView>
         coreScale: coreScale,
       );
       _layoutKey = key;
-      _probe = null;
     }
     return _layout!;
-  }
-
-  void _handleHit(WheelHit hit) {
-    if (hit is CircumplexHit) setState(() => _probe = hit.position);
-    widget.onHit?.call(hit);
   }
 
   @override
@@ -155,117 +201,99 @@ class WheelViewState extends State<WheelView>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final side = math
-            .min(
-              math.min(constraints.maxWidth, constraints.maxHeight),
-              widget.maxSide,
-            )
-            .floorToDouble();
-        if (side < 40) return const SizedBox.shrink();
-        final layout = _layoutFor(side, colors, coreScale);
-
-        final wheel = SizedBox.square(
-          dimension: side,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            onHover: (e) {
-              final id = layout.hitTest(e.localPosition)?.familyId;
-              if (id != _hover) setState(() => _hover = id);
-            },
-            onExit: (_) {
-              if (_hover != null) setState(() => _hover = null);
-            },
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              excludeFromSemantics: true,
-              onTapUp: (d) {
-                final hit = layout.hitTest(d.localPosition);
-                if (hit != null) _handleHit(hit);
-              },
-              child: Stack(
+        final full = Size(constraints.maxWidth, constraints.maxHeight);
+        final place = LayoutBuilder(
+          builder: (context, box) {
+            final rect = _placeWheel(box.biggest);
+            if (rect == null) return const SizedBox.shrink();
+            final layout = _layoutFor(rect.width, colors, coreScale);
+            return Stack(
+              children: [
+                Positioned.fromRect(
+                  rect: rect,
+                  child: Stack(
+                    children: [
+                      RepaintBoundary(
+                        child: CustomPaint(
+                          size: rect.size,
+                          isComplex: true,
+                          painter: WheelBasePainter(
+                            layout: layout,
+                            zoomStep: 1,
+                          ),
+                        ),
+                      ),
+                      WheelTargets(layout: layout),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+        return SizedBox.fromSize(
+          size: full,
+          child: InteractiveViewer(
+            transformationController: _controller,
+            minScale: 1,
+            maxScale: 4,
+            boundaryMargin: EdgeInsets.zero,
+            clipBehavior: Clip.hardEdge,
+            child: SizedBox.fromSize(
+              size: full,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  RepaintBoundary(
-                    child: CustomPaint(
-                      size: Size.square(side),
-                      isComplex: true,
-                      painter: WheelBasePainter(
-                        layout: layout,
-                        zoomStep: _zoomStep,
+                  if (widget.coverTop case final cover?)
+                    ExcludeFocus(
+                      child: ExcludeSemantics(
+                        child: IgnorePointer(
+                          child: Opacity(opacity: 0, child: cover),
+                        ),
                       ),
                     ),
-                  ),
-                  IgnorePointer(
-                    child: CustomPaint(
-                      size: Size.square(side),
-                      painter: WheelHighlightPainter(
-                        layout: layout,
-                        selection: widget.selection,
-                        zoomStep: _zoomStep,
-                        hoverFamilyId: _hover,
-                        probe: _probe,
-                      ),
-                    ),
-                  ),
-                  WheelTargets(
-                    layout: layout,
-                    wheel: widget.wheel,
-                    selection: widget.selection,
-                    onHit: _handleHit,
-                  ),
+                  Expanded(child: place),
                 ],
               ),
             ),
           ),
         );
-
-        return Align(
-          alignment: widget.alignment,
-          child: SizedBox.square(
-            dimension: side,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                InteractiveViewer(
-                  transformationController: _controller,
-                  minScale: 1,
-                  maxScale: 3,
-                  boundaryMargin: EdgeInsets.zero,
-                  clipBehavior: Clip.hardEdge,
-                  child: wheel,
-                ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: AnimatedOpacity(
-                    opacity: _zoomed ? 1 : 0,
-                    duration: Motion.of(context).short,
-                    child: IgnorePointer(
-                      ignoring: !_zoomed,
-                      child: ExcludeSemantics(
-                        excluding: !_zoomed,
-                        child: FilledButton.tonalIcon(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: colors.surface,
-                            foregroundColor: colors.ink,
-                            side: BorderSide(color: colors.outline),
-                          ),
-                          onPressed: _resetZoom,
-                          icon: const Icon(
-                            Icons.zoom_out_map_rounded,
-                            size: 20,
-                          ),
-                          label: const Text(S.resetZoom),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
       },
     );
+  }
+
+  /// Where the full wheel goes in [space]: as large as fits, centred, and
+  /// lifted only as much as needed to stay clear of the corner buttons.
+  Rect? _placeWheel(Size space) {
+    final side = math
+        .min(math.min(space.width, space.height), widget.maxSide)
+        .floorToDouble();
+    if (side < 40) return null;
+    final left = ((space.width - side) / 2).floorToDouble();
+    var top = ((space.height - side) / 2).floorToDouble();
+    final corner = widget.coverBottomRight;
+    if (corner != Size.zero) {
+      final r = side / 2;
+      final box = Rect.fromLTRB(
+        space.width - corner.width,
+        space.height - corner.height,
+        space.width,
+        space.height,
+      );
+      bool clear(double t) {
+        final c = Offset(left + r, t + r);
+        final nearest = Offset(
+          c.dx.clamp(box.left, box.right),
+          c.dy.clamp(box.top, box.bottom),
+        );
+        return (nearest - c).distance >= r + 4;
+      }
+
+      while (top > 0 && !clear(top)) {
+        top = math.max(0, top - 2);
+      }
+    }
+    return Rect.fromLTWH(left, top, side, side);
   }
 }
 

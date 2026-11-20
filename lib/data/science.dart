@@ -15,16 +15,14 @@ final class Reference {
   String? get link => doi != null ? 'https://doi.org/$doi' : url;
 }
 
+/// A help line by name. No phone numbers on purpose: a number can change
+/// after the app is installed, a website shows the current one.
 final class Helpline {
-  const Helpline(this.number, this.name, this.note, this.dial);
+  const Helpline(this.name, this.note, this.url);
 
-  /// As people know it, e.g. "8 800 28888".
-  final String number;
   final String name;
   final String note;
-
-  /// For tel: links.
-  final String dial;
+  final String url;
 }
 
 enum CardKind { text, steps, helplines, wheels, about }
@@ -60,8 +58,8 @@ const wheelStories = <String, String>{
       'viena prieš kitą.',
   'energija':
       'J. Russell (1980) jausmus aprašė dviem klausimais: kiek malonu ir '
-      'kiek energijos. Kai žodžio dar nėra, paliesk vietą, kuri tinka '
-      'tavo būsenai, ir pamatysi artimiausius žodžius.',
+      'kiek energijos. Kai žodžio dar nėra, rask vietą, kuri tinka tavo '
+      'būsenai: šalia jos ir bus artimiausi žodžiai.',
   'jausmu-seimos':
       'P. Shaver ir kolegos (1987) paprašė žmonių sugrupuoti 135 jausmų '
       'žodžius ir rado šešias šeimas: meilę, džiaugsmą, nuostabą, pyktį, '
@@ -70,19 +68,17 @@ const wheelStories = <String, String>{
 };
 
 const helplines = <Helpline>[
-  Helpline('112', 'Skubi pagalba', 'Kai gresia pavojus sau ar kitiems.', '112'),
-  Helpline('116 123', 'Vilties linija', 'Suaugusiems, visą parą.', '116123'),
   Helpline(
-    '8 800 28888',
-    'Jaunimo linija',
-    'Jaunimui, visą parą.',
-    '+37080028888',
+    'Skubi pagalba',
+    'Kai gresia pavojus sau ar kitiems.',
+    'https://112.lt/',
   ),
+  Helpline('Vilties linija', 'Suaugusiems.', 'https://www.viltieslinija.lt/'),
+  Helpline('Jaunimo linija', 'Jaunimui.', 'https://jaunimolinija.lt/'),
   Helpline(
-    '116 111',
     'Vaikų linija',
-    'Vaikams, kasdien nuo 11 iki 23 val.',
-    '116111',
+    'Vaikams ir paaugliams.',
+    'https://www.vaikulinija.lt/',
   ),
 ];
 
@@ -96,8 +92,9 @@ const guideCards = <GuideCard>[
     paragraphs: [
       'Sustok akimirkai. Lėtai įkvėpk ir dar lėčiau iškvėpk.',
       'Pradėk nuo vidurio: kuri spalva arčiausiai to, ką dabar jauti?',
-      'Paliesk ją. Atsivers tikslesni žodžiai.',
-      'Rinkis žodį, kuris tinka. Jei tinka keli, rinkis kelis.',
+      'Eik link krašto: ten tikslesni žodžiai. Jei jie smulkūs, priartink '
+          'ratą dviem pirštais.',
+      'Rask žodį, kuris tinka. Jei tinka keli, tai irgi gerai.',
       'Pastebėk, kur tą jausmą jauti kūne: krūtinėje, pilve, pečiuose.',
       'Pasakyk sau „Jaučiu…“. Jei nori, užsirašyk.',
     ],
@@ -111,7 +108,8 @@ const guideCards = <GuideCard>[
       'Ratas padeda pastebėti jausmus, bet negydo ir nediagnozuoja. Jei '
           'sunku jau kelias savaites arba jausmai trukdo gyventi, pasikalbėk '
           'su šeimos gydytoju ar psichologu.',
-      'Jei sunku dabar, gali paskambinti. Pokalbis nemokamas.',
+      'Jei sunku dabar, kreipkis į pagalbos liniją. Paliesk jos pavadinimą: '
+          'atsivers svetainė, kurioje rasi, kaip susisiekti.',
     ],
     refs: ['bakker2016'],
   ),
@@ -185,7 +183,7 @@ const guideCards = <GuideCard>[
     paragraphs: [
       'Galima jausti ir džiaugsmą, ir liūdesį kartu, pavyzdžiui, '
           'atsisveikinant. Mišrūs jausmai būna dažnai, todėl rate gali '
-          'pasirinkti kelis žodžius.',
+          'rasti ne vieną savo žodį.',
     ],
     refs: ['larsen2011', 'berrios2015'],
   ),

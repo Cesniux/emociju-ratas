@@ -20,7 +20,7 @@ abstract final class Radii {
 abstract final class Sizes {
   /// Minimum touch target (Android 48 dp; Apple's default 44 pt).
   static const double minTarget = 48;
-  static const double wheelMax = 560;
+  static const double wheelMax = 1000;
   static const double readingMax = 640;
   static const double trayHeight = 76;
 }

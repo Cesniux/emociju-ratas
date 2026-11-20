@@ -20,7 +20,7 @@ hub, on warm paper `#FAF6F0` (the app's background, so icon, splash and app feel
 | 8 | Anticipation | `#E9A86A` |
 
 The splash colour lives in `android/app/src/main/res/values{,-night}/colors.xml`
-(`splash_background`, light `#FAF6F0`, dark `#1C1A17`) and in the iOS colour set
+(`splash_background`, light `#FAF6F0`, dark `#202A3D`) and in the iOS colour set
 `ios/Runner/Assets.xcassets/LaunchBackground.colorset`.
 
 ## How to regenerate

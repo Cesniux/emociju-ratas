@@ -9,30 +9,32 @@ import 'sunburst_layout.dart';
 
 /// What a tap on the wheel landed on.
 sealed class WheelHit {
-  const WheelHit(this.familyId);
+  const WheelHit(this.familyId, {this.feelingId});
 
   final String familyId;
+
+  /// The tapped word, if the tap landed on one. Tapping a word chooses it.
+  final String? feelingId;
 }
 
 final class SunburstHit extends WheelHit {
-  const SunburstHit(super.familyId, {this.feelingId});
-
-  /// The tapped word (core, middle or outer), if any.
-  final String? feelingId;
+  const SunburstHit(super.familyId, {super.feelingId});
 }
 
 final class PetalHit extends WheelHit {
-  const PetalHit(super.familyId, {required this.petal, this.feelingId});
+  const PetalHit(super.familyId, {required this.petal, super.feelingId});
 
   final int petal;
-  final String? feelingId;
 }
 
 final class DyadHit extends WheelHit {
-  const DyadHit(super.familyId, {required this.dyad, required this.feelingId});
+  const DyadHit(
+    super.familyId, {
+    required this.dyad,
+    required String super.feelingId,
+  });
 
   final int dyad;
-  final String feelingId;
 }
 
 final class CircumplexHit extends WheelHit {
@@ -41,6 +43,7 @@ final class CircumplexHit extends WheelHit {
     required this.valence,
     required this.arousal,
     required this.position,
+    super.feelingId,
   });
 
   /// −1 (unpleasant) … +1 (pleasant).
@@ -65,19 +68,24 @@ class SemanticTarget {
 
   /// At least 48 × 48, centred on the visible label.
   final Rect rect;
+
+  /// The word this target chooses.
+  String get feelingId => hit.feelingId!;
   final String label;
   final String familyId;
   final WheelHit hit;
   final int order;
 }
 
-/// Minimum on-screen sizes before a ring's words are drawn.
+/// Every word is drawn at every zoom, even when it is small, so people can
+/// see there is more to find and pinch to read it. Only thumbnails
+/// (zoomStep 0) stay colour only.
 abstract final class LabelMin {
   static const double core = 13;
   static const double word = 10;
 
   static bool visible(double fontSize, double min, double zoomStep) =>
-      fontSize > 0 && fontSize * zoomStep >= min - 0.01;
+      fontSize > 0 && zoomStep > 0;
 }
 
 /// Geometry, labels and hit testing for one wheel at one size. Built once
@@ -97,15 +105,6 @@ abstract class WheelLayout {
 
   /// Paints segments and every label readable at [zoomStep].
   void paintBase(Canvas canvas, double zoomStep);
-
-  /// Paints chosen words, the hovered family and the probe dot.
-  void paintHighlights(
-    Canvas canvas, {
-    required Set<String> chosen,
-    required double zoomStep,
-    String? hoverFamilyId,
-    Offset? probe,
-  });
 
   WheelHit? hitTest(Offset p);
 
