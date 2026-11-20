@@ -1,48 +1,48 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>
     <linearGradient id="grad0" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#f2c938"/>
-      <stop offset="0.55" stop-color="#FFD43B"/>
-      <stop offset="1" stop-color="#ffe27a"/>
+      <stop offset="0" stop-color="#caac51"/>
+      <stop offset="0.55" stop-color="#E6C35C"/>
+      <stop offset="1" stop-color="#ebcf7d"/>
     </linearGradient>
     <linearGradient id="grad1" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#f28b29"/>
-      <stop offset="0.55" stop-color="#FF922B"/>
-      <stop offset="1" stop-color="#ffb56f"/>
+      <stop offset="0" stop-color="#95af79"/>
+      <stop offset="0.55" stop-color="#A9C78A"/>
+      <stop offset="1" stop-color="#bad2a1"/>
     </linearGradient>
     <linearGradient id="grad2" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#ee4e4e"/>
-      <stop offset="0.55" stop-color="#FA5252"/>
-      <stop offset="1" stop-color="#fc8989"/>
+      <stop offset="0" stop-color="#709f88"/>
+      <stop offset="0.55" stop-color="#7FB59A"/>
+      <stop offset="1" stop-color="#99c4ae"/>
     </linearGradient>
     <linearGradient id="grad3" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#b547d0"/>
-      <stop offset="0.55" stop-color="#BE4BDB"/>
-      <stop offset="1" stop-color="#d385e7"/>
+      <stop offset="0" stop-color="#7bacb9"/>
+      <stop offset="0.55" stop-color="#8CC3D2"/>
+      <stop offset="1" stop-color="#a3cfdb"/>
     </linearGradient>
     <linearGradient id="grad4" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#4869e9"/>
-      <stop offset="0.55" stop-color="#4C6EF5"/>
-      <stop offset="1" stop-color="#859cf8"/>
+      <stop offset="0" stop-color="#8197ba"/>
+      <stop offset="0.55" stop-color="#93ACD3"/>
+      <stop offset="1" stop-color="#a9bddc"/>
     </linearGradient>
     <linearGradient id="grad5" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#20afc5"/>
-      <stop offset="0.55" stop-color="#22B8CF"/>
-      <stop offset="1" stop-color="#69cfde"/>
+      <stop offset="0" stop-color="#a28cb3"/>
+      <stop offset="0.55" stop-color="#B89FCB"/>
+      <stop offset="1" stop-color="#c6b2d5"/>
     </linearGradient>
     <linearGradient id="grad6" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#1ebf8f"/>
-      <stop offset="0.55" stop-color="#20C997"/>
-      <stop offset="1" stop-color="#67dab8"/>
+      <stop offset="0" stop-color="#c27c6a"/>
+      <stop offset="0.55" stop-color="#DC8D78"/>
+      <stop offset="1" stop-color="#e3a493"/>
     </linearGradient>
     <linearGradient id="grad7" gradientUnits="userSpaceOnUse" x1="512" y1="470" x2="512" y2="95">
-      <stop offset="0" stop-color="#8dcd2b"/>
-      <stop offset="0.55" stop-color="#94D82D"/>
-      <stop offset="1" stop-color="#b6e470"/>
+      <stop offset="0" stop-color="#cd945d"/>
+      <stop offset="0.55" stop-color="#E9A86A"/>
+      <stop offset="1" stop-color="#edb988"/>
     </linearGradient>
     <radialGradient id="hub" cx="0.5" cy="0.42" r="0.65">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="0.80" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#eef1f5"/>
+      <stop offset="0" stop-color="#FFFDF9"/>
+      <stop offset="0.80" stop-color="#FAF6F0"/>
+      <stop offset="1" stop-color="#E9E1D6"/>
     </radialGradient>
     <filter id="softshadow" x="-25%" y="-25%" width="150%" height="150%">
       <feGaussianBlur in="SourceAlpha" stdDeviation="13"/>
@@ -56,7 +56,7 @@
       <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
       <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-  </defs><g transform="translate(512 512) scale(0.7) translate(-512 -512)"><g filter="url(#softshadow)"><g transform="rotate(0 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad0)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(45 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad1)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(90 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad2)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(135 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad3)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(180 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad4)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(225 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad5)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(270 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad6)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(315 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad7)" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/></g>
-    <circle cx="512" cy="512" r="120" fill="url(#hub)" stroke="#e6e9ee" stroke-width="5"/>
-    <circle cx="512" cy="512" r="78" fill="none" stroke="#eef1f5" stroke-width="4"/>
+  </defs><g transform="translate(512 512) scale(0.7) translate(-512 -512)"><g filter="url(#softshadow)"><g transform="rotate(0 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad0)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(45 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad1)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(90 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad2)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(135 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad3)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(180 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad4)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(225 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad5)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(270 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad6)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g><g transform="rotate(315 512 512)"><path d="M512 470 C396 430 402 175 512 95 C622 175 628 430 512 470 Z" fill="url(#grad7)" stroke="#FAF6F0" stroke-width="7" stroke-linejoin="round"/></g>
+    <circle cx="512" cy="512" r="120" fill="url(#hub)" stroke="#E9E1D6" stroke-width="5"/>
+    <circle cx="512" cy="512" r="78" fill="none" stroke="#E9E1D6" stroke-width="4"/>
   </g></g></svg>

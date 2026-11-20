@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Evening blue, the app's dark background. -->
+    <color name="splash_background">#202A3D</color>
+</resources>

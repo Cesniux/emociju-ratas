@@ -4,20 +4,24 @@ Source artwork and generator for the app launcher icon and splash mark.
 
 ## Concept
 
-An 8-petal **flower wheel** echoing the app's own Plutchik emotion wheel
-(`assets/R. Plutchiko emocijų ratas 2.png`): a bloom of eight rounded petals in the
-eight Plutchik emotion colours, around a clean white hub, on a white background.
+An 8-petal **flower wheel** echoing Plutchik's flower inside the app: eight rounded petals in
+the app's calm feeling tints (the "strong" tier of `lib/theme/palette.dart`), around a soft
+hub, on warm paper `#FAF6F0` (the app's background, so icon, splash and app feel like one).
 
 | Petal (clockwise from top) | Emotion | Colour |
 |---|---|---|
-| 1 | Joy | `#FFD43B` |
-| 2 | Anticipation | `#FF922B` |
-| 3 | Anger | `#FA5252` |
-| 4 | Disgust | `#BE4BDB` |
-| 5 (bottom) | Sadness | `#4C6EF5` |
-| 6 | Surprise | `#22B8CF` |
-| 7 | Fear | `#20C997` |
-| 8 | Trust | `#94D82D` |
+| 1 | Joy | `#E6C35C` |
+| 2 | Trust | `#A9C78A` |
+| 3 | Fear | `#7FB59A` |
+| 4 | Surprise | `#8CC3D2` |
+| 5 (bottom) | Sadness | `#93ACD3` |
+| 6 | Disgust | `#B89FCB` |
+| 7 | Anger | `#DC8D78` |
+| 8 | Anticipation | `#E9A86A` |
+
+The splash colour lives in `android/app/src/main/res/values{,-night}/colors.xml`
+(`splash_background`, light `#FAF6F0`, dark `#202A3D`) and in the iOS colour set
+`ios/Runner/Assets.xcassets/LaunchBackground.colorset`.
 
 ## How to regenerate
 

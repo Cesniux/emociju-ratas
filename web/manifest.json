@@ -1,11 +1,11 @@
 {
-    "name": "Emocijų Ratas",
-    "short_name": "Emocijų Ratas",
+    "name": "Emocijų ratas",
+    "short_name": "Emocijų ratas",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#FFFFFF",
-    "theme_color": "#673AB7",
-    "description": "Roberto Plutchiko emocijų ratas – interaktyvūs emocijų ratai.",
+    "background_color": "#FAF6F0",
+    "theme_color": "#FAF6F0",
+    "description": "Ramus emocijų ratas lietuviškai: rask žodį tam, ką jauti.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
